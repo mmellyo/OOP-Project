@@ -1,40 +1,34 @@
+// Treatment class for storing medication details
 public class Treatment {
-    private String medication;
-    private String dosage;
-    private int duration; // in days
+    private String medicationName;  // Name of the medication
+    private String dosage;          // Dosage of the medication (e.g., 500mg, 1 tablet)
+    private int duration;           // Duration of the treatment in days
 
-    public Treatment(String medication, String dosage, int duration) {
-        this.medication = medication;
+    // Constructor to initialize a Treatment object with medication details
+    public Treatment(String medicationName, String dosage, int duration) {
+        this.medicationName = medicationName;
         this.dosage = dosage;
         this.duration = duration;
     }
 
-    public String getMedication() {
-        return medication;
+    // Getter for medication name
+    public String getMedicationName() {
+        return medicationName;  // Return the name of the medication
     }
 
-    public void setMedication(String medication) {
-        this.medication = medication;
-    }
-
+    // Getter for dosage
     public String getDosage() {
-        return dosage;
+        return dosage;  // Return the dosage of the medication
     }
 
-    public void setDosage(String dosage) {
-        this.dosage = dosage;
-    }
-
+    // Getter for duration
     public int getDuration() {
-        return duration;
+        return duration;  // Return the duration of the treatment in days
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
+    // Override the toString method to display treatment details in a readable format
     @Override
     public String toString() {
-        return "Medication: " + medication + ", Dosage: " + dosage + ", Duration: " + duration + " days";
+        return "Medication: " + medicationName + "\nDosage: " + dosage + "\nDuration: " + duration + " days";
     }
 }

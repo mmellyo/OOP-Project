@@ -1,53 +1,70 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*; // Importing the ArrayList and List classes from the java.util package
 
+// MedicalRecord class for storing allergies, surgical history, observations, and treatments
 public class MedicalRecord {
-    private String patientID;
-    private List<String> allergies;
-    private List<String> surgicalHistory;
-    private String medicalObservations;
-    private List<Treatment> treatments;
 
+    // Instance variables (attributes) to store information about a patient's medical record
+    private String patientID;               // Unique ID associated with the patient
+    private List<String> allergies;         // A list to store allergies the patient has
+    private List<String> surgicalHistory;   // A list to store the patient's surgical history
+    private String medicalObservations;     // Medical observations about the patient (e.g., diagnoses)
+    private List<Treatment> treatments;     // A list of treatments the patient has received (using Treatment class)
+
+    // Constructor to initialize a new MedicalRecord object with just the patient's ID
+    // The constructor initializes the lists to empty since they may be filled later
     public MedicalRecord(String patientID) {
-        this.patientID = patientID;
-        this.allergies = new ArrayList<>();
-        this.surgicalHistory = new ArrayList<>();
-        this.treatments = new ArrayList<>();
+        this.patientID = patientID;          // Set the patient's unique ID
+        this.allergies = new ArrayList<>();  // Initialize the allergies list as an empty list
+        this.surgicalHistory = new ArrayList<>(); // Initialize the surgical history list as an empty list
+        this.treatments = new ArrayList<>(); // Initialize the treatments list as an empty list
     }
 
-    // Add an allergy to the record
+    // Methods to add information to the medical record
+
+    // Add an allergy to the patient's medical record
     public void addAllergy(String allergy) {
-        allergies.add(allergy);
+        allergies.add(allergy); // Adds the given allergy to the allergies list
     }
 
-    // Add a surgical history to the record
+    // Add a surgery to the patient's surgical history
     public void addSurgicalHistory(String surgery) {
-        surgicalHistory.add(surgery);
+        surgicalHistory.add(surgery); // Adds the given surgery to the surgical history list
     }
 
-    // Add a medical observation
-    public void addObservation(String observation) {
-        this.medicalObservations = observation;
+    // Set the medical observations for the patient (e.g., diagnoses, results)
+    public void setMedicalObservations(String observations) {
+        this.medicalObservations = observations; // Set the medical observations field
     }
 
-    // Add a treatment to the record
+    // Add a treatment to the patient's treatments list
     public void addTreatment(Treatment treatment) {
-        treatments.add(treatment);
+        treatments.add(treatment); // Adds the given treatment (which is an object of the Treatment class) to the treatments list
     }
 
-    // Display the medical summary
-    public String getMedicalSummary() {
-        StringBuilder summary = new StringBuilder();
-        summary.append("Patient ID: ").append(patientID).append("\n");
-        summary.append("Allergies: ").append(allergies.isEmpty() ? "None" : String.join(", ", allergies)).append("\n");
-        summary.append("Surgical History: ").append(surgicalHistory.isEmpty() ? "None" : String.join(", ", surgicalHistory)).append("\n");
-        summary.append("Medical Observations: ").append(medicalObservations != null ? medicalObservations : "None").append("\n");
-        summary.append("Treatments: \n");
+    // Getter methods to retrieve information from the medical record
 
-        for (Treatment treatment : treatments) {
-            summary.append("  - ").append(treatment).append("\n");
-        }
+    // Get the patient's ID (e.g., for identifying the record)
+    public String getPatientID() {
+        return patientID; // Return the patient's unique ID
+    }
 
-        return summary.toString();
+    // Get the list of allergies the patient has
+    public List<String> getAllergies() {
+        return allergies; // Return the list of allergies
+    }
+
+    // Get the list of surgeries the patient has had
+    public List<String> getSurgicalHistory() {
+        return surgicalHistory; // Return the list of surgical history
+    }
+
+    // Get the medical observations of the patient (e.g., diagnoses or test results)
+    public String getMedicalObservations() {
+        return medicalObservations; // Return the medical observations
+    }
+
+    // Get the list of treatments the patient has undergone
+    public List<Treatment> getTreatments() {
+        return treatments; // Return the list of treatments
     }
 }
