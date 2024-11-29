@@ -1,52 +1,82 @@
-import javax.swing.*;        // Import Swing components (e.g., JFrame, JButton) for building the GUI
-import java.awt.*;           // Import AWT components for layout management (e.g., GridLayout)
-import java.awt.event.*;     // Import event handling for GUI components (e.g., ActionListener)
-import java.util.*;          // Import utilities (e.g., ArrayList, Random)
+import java.awt.*;        // Import Swing components (e.g., JFrame, JButton) for building the GUI
+import java.util.*;
+import javax.swing.*;
 
-// Main application class to manage the medical records application using Swing (GUI)
-public class MedicalRecordAppSwing {
+//Main application class to manage the medical records application using Swing (GUI)
+public class MedicalRecordApp {
 
-    // Lists to store the patient records and medical records
-    private static ArrayList<Patient> patientRecords = new ArrayList<>();
+    // Lists to store the patient & medical records
+    private static ArrayList<Patient> patientRecords = new ArrayList<>();  //an ArrayList that hold objects of type Patient.
+    private static ArrayList<Doctor> doctorsRecords = new ArrayList<>();
     private static ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
 
-    // Main method - Entry point for the application
+    //Main method - Entry point for the application
     public static void main(String[] args) {
-        // Create a default patient for testing purposes
-        Patient defaultPatient = new Patient(1, "patient@gmail.com", "123-456-7890", "John", "Doe", 75.0, 175.0,
-                "No previous surgeries", "No major medical conditions", "Healthy", "");
-        patientRecords.add(defaultPatient);  // Add the default patient to the list
 
-        // Create the main JFrame (window) for the application
-        JFrame mainFrame = new JFrame("Medical App GUI");
-        mainFrame.setSize(400, 300);          // Set the size of the window
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Set close operation to exit the program
+        //Create a default patient for testing purposes
+        Patient defaultPatient = new Patient(
+            1,
+            "0550607080",
+            "patient",
+            "default",
+            75.0, 175.0,
+            "No previous surgeries",
+            "No major medical conditions",
+            "Healthy",
+            "Previous checkup on 2024-11-01: All vitals normal.");
 
-        // Create a panel with a GridLayout to arrange components vertically
-        JPanel rolePanel = new JPanel(new GridLayout(3, 1));
-        JLabel welcomeLabel = new JLabel("Welcome! Please select your role:");  // Label to welcome user
-        JButton patientButton = new JButton("Patient");    // Button for patient role
-        JButton doctorButton = new JButton("Doctor");      // Button for doctor role
+        patientRecords.add(defaultPatient);  //Add the default patient to the list
 
-        // Add components (welcome label and buttons) to the panel
-        rolePanel.add(welcomeLabel);
-        rolePanel.add(patientButton);
-        rolePanel.add(doctorButton);
+        //JFrame
+        JFrame mainFrame = new JFrame("Health Medical Center");
+        mainFrame.setSize(400, 300);          
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Add the panel to the main frame and make the frame visible
-        mainFrame.add(rolePanel);
+        /************************************************************** */
+        //panel with a GridLayout to arrange components vertically
+        JPanel loginPanel = new JPanel(new GridLayout(4, 1));
+        JLabel welcomeLabel = new JLabel("Welcome!");
+        JLabel IDLabel = new JLabel("Enter your ID please:");  // Label for id input
+        JTextField IDField = new JTextField();  // Text field to enter ID
+        /*JLabel PhoneNumberLabel = new JLabel("Enter your Phone number please:");  // Label for nmbr input
+        JTextField PhoneNumberField = new JTextField();  // Text field to enter nmbr         
+        JButton loginButton = new JButton("already have an account? log in");      
+        JButton signupButton = new JButton("create a new account");*/
+
+        //Adding components (welcome label and buttons) to the login panel
+        //loginPanel.add(welcomeLabel);
+        loginPanel.add(IDLabel);
+        loginPanel.add(IDField);
+        /*loginPanel.add(PhoneNumberLabel);
+        loginPanel.add(PhoneNumberField);
+        loginPanel.add(signupButton);
+        loginPanel.add(loginButton);*/
+
+        //Adding the login panel to the main frame and make it visible
+        mainFrame.add(loginPanel);
         mainFrame.setVisible(true);
 
-        // Action listener for the Patient button - opens patient login screen
-        patientButton.addActionListener(e -> openPatientLoginScreen());
-        
-        // Action listener for the Doctor button - displays a message that doctor functionality is coming soon
-        doctorButton.addActionListener(e -> JOptionPane.showMessageDialog(mainFrame, "Doctor functionality coming soon."));
+        //Action listener for the sign-up button - choose role
+        signupButton.addActionListener(e -> {
+            String number = PhoneNumberField.getText();
+            if (findPatientByNumber(number) == null) {
+                // If the email is not registered :
+                mainFrame.dispose();  // Close the login frame
+                openRole(number);          // choose if youre a dcr or a patient
+            } else {
+                // If the email is already registered, show an error message
+                JOptionPane.showMessageDialog(mainFrame, "This email is already registered.", "log in", JOptionPane.ERROR_MESSAGE);
+            }
+        } );
+
+
+        //Action listener for the Doctor button - displays a message that doctor functionality is coming soon
+        loginButton.addActionListener(e -> JOptionPane.showMessageDialog(mainFrame, "Doctor functionality coming soon."));
     }
 
     // Method to open the patient login screen where patients can log in or sign up
     private static void openPatientLoginScreen() {
-        // Create a new JFrame for the patient login/signup screen
+        //Create a new JFrame for the patient login/signup screen
         JFrame patientFrame = new JFrame("Patient Login/Signup");
         patientFrame.setSize(400, 300);
         JPanel panel = new JPanel(new GridLayout(3, 2));  // Panel with 3 rows and 2 columns for inputs
@@ -69,7 +99,7 @@ public class MedicalRecordAppSwing {
         // Action listener for the login button
         loginButton.addActionListener(e -> {
             String email = emailField.getText();  // Get the email entered by the user
-            Patient patient = findPatientByEmail(email);  // Find the patient using the email
+            Patient patient = findPatientByNumber(email);  // Find the patient using the email
             if (patient != null) {
                 // If the patient is found, show a welcome message and proceed to display patient info
                 JOptionPane.showMessageDialog(patientFrame, "Welcome back, " + patient.getName() + "!");
@@ -85,7 +115,7 @@ public class MedicalRecordAppSwing {
         // Action listener for the sign-up button
         signUpButton.addActionListener(e -> {
             String email = emailField.getText();  // Get the email entered by the user
-            if (findPatientByEmail(email) == null) {
+            if (findPatientByNumber(email) == null) {
                 // If the email is not registered, proceed to sign up by collecting patient details
                 patientFrame.dispose();  // Close the login frame
                 collectPatientDetails(email);  // Collect additional details for sign-up
@@ -95,6 +125,57 @@ public class MedicalRecordAppSwing {
             }
         });
     }
+
+    private static void openRole(String email) {
+        JFrame roleFrame = new JFrame("Role Selection");
+        roleFrame.setSize(400, 300);
+        JPanel rolePanel = new JPanel(new GridLayout(3, 1));
+
+        JLabel roleLabel = new JLabel("Are you signing up as a doctor or a patient?");
+        JButton patientRoleButton = new JButton("Patient");
+        JButton doctorRoleButton = new JButton("Doctor");
+
+        rolePanel.add(roleLabel);
+        rolePanel.add(patientRoleButton);
+        rolePanel.add(doctorRoleButton);
+
+        roleFrame.add(rolePanel);
+        roleFrame.setVisible(true);
+
+
+        // Action listener for the patient role button
+        patientRoleButton.addActionListener(e -> {
+            Random rand = new Random();
+            int id = rand.nextInt(1000); // Generate a random patient ID (0 - 999)
+            Patient newPatient = new Patient(
+                id,
+                "N/A", // Placeholder phone number
+                "N/A", // Placeholder name
+                "N/A", // Placeholder surname
+                0, 0,  // Placeholder weight and height
+                "N/A", "N/A", "N/A", ""
+            );
+            patientRecords.add(newPatient);
+            JOptionPane.showMessageDialog(roleFrame, "Patient ID created: " + id + "\n with email :" + email) ;
+            roleFrame.dispose();
+            openMedicineTypeSelection();  //Proceed to medicine type selection
+        });
+
+
+        // Action listener for the doctor role button
+        doctorRoleButton.addActionListener(e -> {
+            Random rand = new Random();
+            int id = 1000 + rand.nextInt(1001);  // (1000 - 2000)
+            Doctor newDoctor = new Doctor(id, email, "N/A", "N/A");
+            doctorsRecords.add(newDoctor);
+            JOptionPane.showMessageDialog(roleFrame, "Doctor ID created: " + id + "\n with email :" + email) ;
+            roleFrame.dispose();
+            openMedicineTypeSelection();  //Proceed to medicine type selection
+
+        });
+    }
+   
+
 
     // Method to collect additional patient details during the sign-up process
     private static void collectPatientDetails(String email) {
@@ -156,7 +237,7 @@ public class MedicalRecordAppSwing {
                 String medicalConditions = medicalConditionsField.getText();
 
                 // Create a new Patient object and add it to the list of patients
-                Patient newPatient = new Patient(id, email, phoneNumber, name, surname, weight, height, medicalHistory, surgicalHistory, medicalConditions, "");
+                Patient newPatient = new Patient(id, phoneNumber, name, surname, weight, height, medicalHistory, surgicalHistory, medicalConditions, "");
                 patientRecords.add(newPatient);
 
                 // Show a confirmation message and open the medicine selection screen
@@ -171,9 +252,9 @@ public class MedicalRecordAppSwing {
     }
 
     // Method to find a patient by their email address
-    private static Patient findPatientByEmail(String email) {
+    private static Patient findPatientByNumber(String email) {
         for (Patient patient : patientRecords) {
-            if (patient.getEmail().equals(email)) {
+            if (patient.getPhoneNumber().equals(email)) {
                 return patient;  // Return the patient if found
             }
         }
@@ -190,13 +271,13 @@ public class MedicalRecordAppSwing {
         JOptionPane.showMessageDialog(null, patient.toString() + "\nPrevious Observations: " + previousObservations);
     }
 
-    // Method to open the window where the patient can select their medicine type (ophthalmologist, optician, etc.)
+    // Method to open the window where the patient can select their medicine type
     private static void openMedicineTypeSelection() {
-        JFrame medicineFrame = new JFrame("Choose Medicine Type");
-        medicineFrame.setSize(400, 300);
-        JPanel panel = new JPanel(new GridLayout(5, 1));  // Panel with buttons for different medicine types
+        JFrame typeFrame = new JFrame("Choose Medicine Type");
+        typeFrame.setSize(400, 600);
+        JPanel panel = new JPanel(new GridLayout(6, 1));
 
-        JLabel promptLabel = new JLabel("Please choose your medical specialty:");
+        JLabel promptLabel = new JLabel("Please choose the medical specialty:");
 
         // Create buttons for various medical specialties
         JButton ophthalmologistButton = new JButton("Ophthalmologist");
@@ -213,7 +294,20 @@ public class MedicalRecordAppSwing {
         panel.add(cardiologistButton);
         panel.add(dentistButton);
 
-        medicineFrame.add(panel);
-        medicineFrame.setVisible(true);
+        typeFrame.add(panel);
+        typeFrame.setVisible(true);
     }
 }
+
+
+
+/*String ID = IDField.getText();  // Get the ID entered by the user
+            if (ID.matches("[0-9]+")) {
+                JOptionPane.showMessageDialog(mainFrame, "welcome, patient!");
+                openMedicineTypeSelection();
+            } else if (ID.matches("[a-zA-Z]+")) {
+                JOptionPane.showMessageDialog(mainFrame, "welcome, doctor!");
+                openMedicineTypeSelection();
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "The ID contains a mix of characters.");
+            } */
