@@ -1,22 +1,19 @@
-import java.util.*;
+import java.util.ArrayList;
 
-public class Doctor {
-    private int id;                     
-    private String name;                
-    private String specialty;           
-    private String email;
-    private String phoneNumber;
-            
+public class Doctor extends Person {
+    private String specialty;            
     private ArrayList<Patient> patientsList; // List of patients the doctor is treating
 
     // Constructor to initialize a Doctor object
-    public Doctor(int id, String name, String specialty, String email) {
-        this.id = id;
-        this.name = name;
+    public Doctor(int id, String name, String lastName, String specialty, String phoneNumber) {
+        super(id, name, lastName, phoneNumber);  // Call the constructor of the Person class
         this.specialty = specialty;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
         this.patientsList = new ArrayList<>();
+    }
+
+    // Method to get doctor's specialty
+    public String getSpecialty() {
+        return specialty;
     }
 
     // Method to add a patient to the doctor's patient list
@@ -24,15 +21,15 @@ public class Doctor {
         this.patientsList.add(patient);
     }
 
-    // Method to view a patient's information by email
-    public Patient viewPatientInfo(String email) {
-        for (Patient patient : patientsList) {   //go through each Patient in patientsListvand perform op with each Patient.
-            if (patient.getPhoneNumber().equals(email)) {
-                return patient;  // Return the patient if found
+    // Method to view a patient's information by number
+    /*public Patient viewPatientInfo(int phoneNumber) {
+        for (Patient tempPatient : patientsList) {   
+            if (tempPatient.getPhoneNumber() == phoneNumber) {
+                return tempPatient;  // Return the patient if found
             }
         }
         return null;  // Return null if patient not found
-    }
+    }*/
 
     // Method to update a patient's observations
     public void updatePatientObservation(Patient patient, String observation) {
@@ -41,11 +38,11 @@ public class Doctor {
 
     // Method to display doctor's information
     public String getDoctorInfo() {
-        return "Doctor ID: " + id + "\nName: " + name + "\nSpecialty: " + specialty + "\nContact Info: " + email;
+        return "Doctor ID: " + getId() + "\nName: " + getName() + "\nLast Name: " + getLastName() + "\nSpecialty: " + specialty ;
     }
 
     // Method to display the list of patients the doctor is treating
-    public void displaypatientsList() {
+    public void displayPatientsList() {
         if (patientsList.isEmpty()) {
             System.out.println("No patients assigned to this doctor.");
         } else {

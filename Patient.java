@@ -1,62 +1,48 @@
-//Patient class to store individual patient details
-public class Patient {
+public class Patient extends Person {
 
-    //Instance variables (attributes) of the Patient class to store personal information
-    private int id;                                                
-    private String phoneNumber;               
-    private String name;                      
-    private String lastName;                
-    private double weight;                    
-    private double height;                    
-    private String medicalHistory;            
-    private String surgicalHistory;           
-    private String medicalConditions;         
-    private String previousObservations; 
-    private static int idCounter = 1;    
 
-    // Constructor to initialize a new patient object with all the necessary details
-    public Patient(int id, String phoneNumber, String name, String lastName, double weight, double height,
-                   String medicalHistory, String surgicalHistory, String medicalConditions, String previousObservations) {
+    private String previousObservations;
+    private String previousObservationsDcr;
+    private String dateOfBirth;
 
-        this.id = idCounter++;;                                            
-        this.phoneNumber = phoneNumber;        
-        this.name = name;                      
-        this.lastName = lastName;               
-        this.weight = weight;                  
-        this.height = height;                 
-        this.medicalHistory = medicalHistory;
-        this.surgicalHistory = surgicalHistory; 
-        this.medicalConditions = medicalConditions;
+    // Constructor to initialize a new Patient object with all the necessary details
+    public Patient(int id, 
+                   String name,
+                   String lastName, 
+                   String phoneNumber, 
+                   String dateOfBirth, 
+                   String previousObservations, 
+                   String previousObservationsDcr) {
+
+        super(id, name, lastName, phoneNumber); // Call the constructor of the Person class
         this.previousObservations = previousObservations;
+        this.previousObservationsDcr = previousObservationsDcr;
+        this.dateOfBirth = dateOfBirth;
     }
 
-    // Getter method for the number of the patient
-    public String getPhoneNumber() {
-        return phoneNumber; 
-    }
 
-    // Getter method for the name of the patient
-    public String getName() {
-        return name;
-    }
-
-    // Getter method for the previous observations of the patient
+    // Getter methods
     public String getPreviousObservations() {
         return previousObservations;
     }
 
+    public String getPreviousObservationsdcr() {
+        return previousObservationsDcr;
+    }
+
+    public String getbd() {
+        return dateOfBirth;
+    }
+
     // Override the toString method to provide a string representation of the Patient object
-    // This will be used to display all the patient's details in a readable format
     @Override
     public String toString() {
-        // Return a string with all the patient's information formatted for display
-        return "ID: " + id + "\nPhone Number: " + phoneNumber + "\nName: " + name + " " + lastName +
-               "\nWeight: " + weight + " kg\nHeight: " + height + " cm\nMedical History: " + medicalHistory +
-               "\nSurgical History: " + surgicalHistory + "\nMedical Conditions: " + medicalConditions;
+        return "ID: " + getId() + "\nName: " + getName() + " " + getLastName() + "\nPhone Number: " + getPhoneNumber() + "\nDate of birth: " + getbd() + 
+              "\nprevious Observations dates: " + getPreviousObservations()+  "\nprevious Observations dates: " + getPreviousObservationsdcr();
     }
 
     // Setter method to set or update the previous observations of the patient
     public void setPreviousObservation(String observation) {
-        this.previousObservations = observation; // Set the previous observations with the new observation passed as an argument
+        this.previousObservations = observation;
     }
 }
