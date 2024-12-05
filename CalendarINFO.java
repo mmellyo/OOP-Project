@@ -1,37 +1,55 @@
-import java.time.YearMonth; // Importing YearMonth class from java to manipulate years and months
-import java.util.HashSet;
-import java.util.Set;
+import java.time.YearMonth; // Importing YearMonth class from Java to represent year/month and methods to manipulate this data
+import java.time.LocalDate; // It allows the user to have a complete date (year, month, day)
+import java.util.HashSet; // Used to store unique data
+import java.util.Set; // Used to store unique data
 
-// Declaration of CalendarINFO class
+// Declaration of CalendarINFO class that contains all the informations about my Medical Calendar (Calendrier Personaliser)
 public class CalendarINFO {
-    private int year; // Current year attribute
-    private int month; // Month attribute from January to December
-    private Set<String> blockedDays; // Set of blocked days 
+    private int year; // Attribute that represents the current year of the calendar
+    private int month; // Attribute that represents the current month of the calendar
+    private Set<String> blockedDays; // Set to store blocked days (as strings)
 
-    // Constructor that initializes the object with a year and a month
+    // Class constructor that initializes the object with a year and a month
     public CalendarINFO(int year, int month){
-        this.year = year;
-        this.month = month;
-        this.blockedDays = new HashSet<>();
-        initializeBlockedDays();
+        this.year = year; // Initialize an object with a year
+        this.month = month; // Initialize an object with a month
+        this.blockedDays = new HashSet<>(); // Create an empty HashSet (best for search operations) for blocked days
+        initializeBlockedDays(); // Method that allows to add predefined public holidays
     }
 
-    // Guetters allow access to the value of year and month
+    // Guetter allows access to the value of year
     public int getYear() {
-        return year;
+        return year; // Returns the current calendar year
     }
+
+    // Guetter allows access to the value of month
     public int getMonth(){
-        return month;
+        return month; // Returns the current calendar month
+    }
+
+     // Setter for the year 
+    public void setYear(int year){
+        LocalDate currentDate = LocalDate.now();
+        if (year >= currentDate.getYear()) { // If condition: the year is not in the past compared to the current year
+            this.year = year; // Valid condition so it is updated
+        } else { // Otherwise, an error message is displayed
+            System.out.println("You cannot navigate to a year that has already passed!");
+        }
+    }
+
+    // Setter for the month
+    public void setMonth(int month){
+        LocalDate currentDate = LocalDate.now();
+        YearMonth currentYearMonth = YearMonth.from(currentDate);
+        YearMonth targetYearMonth = YearMonth.of(year, month);
+
+        if (!targetYearMonth.isBefore(currentYearMonth)) { // If the month is in the future or in the present
+            this.month = month;
+        } else {
+            System.out.println("You cannot navigate to a month that has already passed!");
+        }
     }
      
-    // Setters allow to modify the value of year and month
-    public void setYear(int year){
-        this.year = year;
-    }
-    public void setMonth(int month){
-        this.month = month;
-    }
-
     // Method that calculates the number of days in the current month
     public int getDayInMonth() {
         return YearMonth.of(year, month).lengthOfMonth(); 
