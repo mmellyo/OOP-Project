@@ -40,30 +40,30 @@ public class CalendarINFO {
     // Setter for the month
     public void setMonth(int month){
         LocalDate currentDate = LocalDate.now();
-        YearMonth currentYearMonth = YearMonth.from(currentDate);
-        YearMonth targetYearMonth = YearMonth.of(year, month);
+        YearMonth currentYearMonth = YearMonth.from(currentDate); // Represents the current year and month (date)
+        YearMonth targetYearMonth = YearMonth.of(year, month); // Represents the current year with the month given as a parameter
 
-        if (!targetYearMonth.isBefore(currentYearMonth)) { // If the month is in the future or in the present
-            this.month = month;
-        } else {
+        if (!targetYearMonth.isBefore(currentYearMonth)) { // If condition: checks that targetYearMonth is not before the current month
+            this.month = month; // Condition is valid so the month is updated
+        } else { // Otherwise, an error message is displayed
             System.out.println("You cannot navigate to a month that has already passed!");
         }
     }
      
-    // Method that calculates the number of days in the current month
+    // Method to get the number of days in the current month
     public int getDayInMonth() {
         return YearMonth.of(year, month).lengthOfMonth(); 
         // YearMonth.of: creates an object for a specific year and month
-        // lengthOfMonth: Returns the number of days according to the month (28,29,30,31)
+        // lengthOfMonth: Returns the number of days according to the month (february 28 or 29, the rest of months 30 or 31 days)
     }
 
-    // Method returns the day of the week for the first day of the current month
+    // Method returns the first day of the week
     public int getFirstDayOfWeek(){
-        return YearMonth.of(year, month).atDay(1).getDayOfWeek().getValue();
+        return YearMonth.of(year, month).atDay(1).getDayOfWeek().getValue(); // Return its value
     }
 
-    private void initializeBlockedDays() {
-        //Specific dates blocked
+    // Method for Specific blocked dates (les jours feries in Algeria)
+    private void initializeBlockedDays() { // Initialization of blocked days
         blockedDays.add("01/01"); // January 1st New Year's Day
         blockedDays.add("01/12"); // January 12 Yennayer
         blockedDays.add("05/01"); // May 1 Labor Day
@@ -71,16 +71,32 @@ public class CalendarINFO {
         blockedDays.add("11/01"); // November 1st Anniversary of The Start of the Algerian War   
     }
 
+    // Method Check if every Friday is a blocked day
     public boolean isDayBlocked(int day) {
-        // Check if every Friday is blocked 
         int dayOfWeek = YearMonth.of(year, month).atDay(day).getDayOfWeek().getValue();
-        if (dayOfWeek == 5) { // Friday
+        if (dayOfWeek == 5) { // 5 refers to Friday, the 5th day of the week
             return true;
         }
 
         // Check if the date is blocked
-        String dateFormatted = String.format("%02d/%02d", month , day);
+        String dateFormatted = String.format("%02d/%02d", month , day); // The date in “MM/DD”
         return blockedDays.contains(dateFormatted);
+    }
+
+     // Checking if a date has passed
+    private boolean isMonthInFuture(int year, int month) {
+        LocalDate currentDate = LocalDate.now(); // Creates a LocalDate object for the targeted date
+        YearMonth currentYearMonth = YearMonth.from(currentDate);
+        YearMonth targetYearMonth = YearMonth.of(year, month);
+        return !targetYearMonth.isBefore(currentYearMonth);
+        // Comparing the two to check if the target date has passed.
+    }
+
+     public boolean isDayInPast(int day) {
+        LocalDate today = LocalDate.now();
+        LocalDate targetDate = LocalDate.of(year, month, day);
+    
+        return targetDate.isBefore(today); // Returns true if the day has passed
     }
 }
     
