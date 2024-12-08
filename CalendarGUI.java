@@ -3,8 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 
-// Declaration of CalendarGUI class
+// Declaration of CalendarGUI class that contains the graphique interfce for my Medical Calendar
 public class CalendarGUI {
     private CalendarINFO calendarInfo; // Instance of CalendarINFO which contains current calendar informations
     private JLabel monthYearLabel; // Label to display the current month and year
@@ -30,15 +31,14 @@ public class CalendarGUI {
         topPanel.add(monthYearLabel, BorderLayout.CENTER);
         
         JButton prevButton = new JButton("<"); // Creating a “previous” button
-        prevButton.addActionListener(e -> changeMonth(-1)); // (-1) to go to the previous month
+        prevButton.addActionListener(e -> changeMonth(-1)); // (-1) to go to the previous month (current month-1)
         topPanel.add(prevButton, BorderLayout.WEST); // Button is placed on the left
 
         JButton nextButton = new JButton(">"); // Creating a “next” button
-        nextButton.addActionListener(e -> changeMonth(1)); // (1) to move to the next month
+        nextButton.addActionListener(e -> changeMonth(1)); // (1) to move to the next month (current month+1)
         topPanel.add(nextButton, BorderLayout.EAST); // Button is placed on the right
 
         // Central  panel (days)
-
         calendarPanel = new JPanel(new GridLayout(0, 7)); // Creation of a panel with a 7 column grid for the days of the week
         frame.add(calendarPanel, BorderLayout.CENTER); // Adding this panel to the center of the window
 
@@ -75,21 +75,28 @@ public class CalendarGUI {
             JLabel label = new JLabel(String.valueOf(day), JLabel.CENTER);
             label.setFont(new Font("Arial", Font.PLAIN, 12));
 
-            // Creat new locale variable 
+            // Creat new locale variable for events  
             final int currentDay = day; 
 
             //verify if days are blocked
-            if (calendarInfo.isDayBlocked(day)){
-                label.setForeground(Color.RED); // Blocked days are colored red
+            if (calendarInfo.isDayInPast(day)){
+                label.setForeground(Color.GRAY); // Days in past are colored in gray
+            }else if (calendarInfo.isDayBlocked(day)) {
+                label.setForeground(Color.RED);// Blocked days are colored in red
             }
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e){
-                    if (calendarInfo.isDayBlocked(currentDay)){
+                    if (calendarInfo.isDayInPast(currentDay)) {
+                        // Error message for past days
+                        JOptionPane.showMessageDialog(null, "Unable to add an appointment to a day that has already passed!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    } else if (calendarInfo.isDayBlocked(currentDay)) {
+                        // Message for blocked days
                         showBlockedMessage();
                     } else {
+                        // Add an event for a valid day
                         showAddEventMessage(currentDay);
-                    }
+                    } 
                 }
             });
             calendarPanel.add(label);
@@ -106,29 +113,46 @@ public class CalendarGUI {
     }
 
     private void showBlockedMessage(){
-        JOptionPane.showMessageDialog(null, "The Medical Office is closed", "It's Friday / Holidays", JOptionPane.WARNING_MESSAGE);
+        // Print an error message on the window when the user click on a blocked day 
+        JOptionPane.showMessageDialog(null, " The Medical Center 'bloom' is closed", "It's Friday / Holidays", JOptionPane.WARNING_MESSAGE);
     }
 
-    private void showAddEventMessage(int day){
-        JOptionPane.showMessageDialog(null, "Add Appointment for" + day, "Add Appointment", JOptionPane.INFORMATION_MESSAGE);
+    private void showAddEventMessage(int date){
+        JOptionPane.showMessageDialog(null, "Add Appointment for :" + date , "Add Appointment", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void changeMonth(int delta) {
         int newMonth = calendarInfo.getMonth() + delta;
         int newYear = calendarInfo.getYear();
-
+        
+ 
         if (newMonth < 1) {
+            // Valid condition we move to the previous year 
             newMonth = 12;
             newYear--;
         } else if (newMonth > 12) {
+            // Valid condition we move to the next year 
             newMonth = 1;
             newYear++;
         }
 
-        calendarInfo.setMonth(newMonth);
-        calendarInfo.setYear(newYear);
+        int currentYear = LocalDate.now().getYear();
+        int currentMonth = LocalDate.now().getMonthValue();
+
+        // Validation to prevent access to past months
+        LocalDate currentDate = LocalDate.now();
+        if (newYear < currentDate.getYear() || (newYear == currentDate.getYear() && newMonth < currentDate.getMonthValue())) {
+            JOptionPane.showMessageDialog(null, "Unable to navigate to a past month!", "ERROR!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Apply the new values ​​if they are valid
+        calendarInfo.setYear(newYear); // Update year first
+        calendarInfo.setMonth(newMonth); // Then update the month
         updateCalendar();
     }
 }
+
+
 
 
