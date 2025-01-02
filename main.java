@@ -2,6 +2,7 @@ import java.time.LocalDate; // Class used to manipulate dates without times
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
 // Main class declaration
 public class Main { 
     // public: Indicates that the class is accessible to everyone
