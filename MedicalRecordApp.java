@@ -60,19 +60,19 @@ public class MedicalRecordApp {
         submiButton.addActionListener(e -> {
             int tempID = Integer.parseInt(IDField.getText());
            
-            if(tempID == nurse.getId()) { // If I log as a nurse
+            if(tempID == nurse.getId()) {
                 mainFrame.dispose();
                 openNameInput();
             } else if (tempID == defaultDoctor1.getId()){
                 mainFrame.dispose();
-                openDoctorWelcome(defaultDoctor1.getName()); // Open the welcome window for the doctor 1
+                openDoctorWelcome(defaultDoctor1.getName()); // Open the welcome window for the doctor 
                 
             } else if (tempID == defaultDoctor2.getId()) {
                 mainFrame.dispose();
-                openDoctorWelcome(defaultDoctor2.getName()); // Open the welcome window for the doctor 2
-                
-            } else { // If ID isn't Valide
-                JOptionPane.showMessageDialog(mainFrame, "Invalid ID, please enter a valid ID"); 
+                openDoctorWelcome(defaultDoctor2.getName());
+                //opendoctor2prgrm();
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "Invalid ID, please enter a valid ID");
             }
         } );  
     }
@@ -86,8 +86,45 @@ public class MedicalRecordApp {
         // Create a label with the welcome message
         JLabel welcomeLabel = new JLabel("Welcome Dr." + doctorName, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));  // text style 
-        doctorWelcomeFrame.add(welcomeLabel); // add label to the window at the top of the window
-        doctorWelcomeFrame.setVisible(true); // Make the window visible
+
+        // Créer un bouton de déconnexion (Log Out)
+        JButton logoutButton = new JButton("Log Out");
+        logoutButton.addActionListener(e -> {
+        doctorWelcomeFrame.dispose();
+        });
+
+        // Créer le bouton "See Patient"
+        JButton seePatientButton = new JButton("See Patient");
+        seePatientButton.addActionListener(e -> {
+            // Ici, vous pouvez ouvrir une nouvelle fenêtre pour voir les patients ou afficher les informations
+            JOptionPane.showMessageDialog(doctorWelcomeFrame, "Displaying patient information...");
+            // Vous pouvez également ajouter un appel à une méthode pour afficher les informations du patient
+        });
+        
+        
+        doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER); // add label to the window at the top of the window
+        
+        // Ajouter l'étiquette au centre de la fenêtre
+        doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER);
+
+        // Créer un panel pour le bouton "Log Out"
+       JPanel buttonPanel = new JPanel();
+       logoutButton.setPreferredSize(new Dimension(150, 50)); 
+       seePatientButton.setPreferredSize(new Dimension(150, 50));
+
+       buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
+       buttonPanel.add(seePatientButton);  
+
+        // Ajouter le panel contenant le bouton au bas de la fenêtre
+        doctorWelcomeFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Afficher la fenêtre de bienvenue du médecin
+        doctorWelcomeFrame.setVisible(true);
+     
+       
+        
+       
+        
         
     }
 
