@@ -65,6 +65,7 @@ public class MedicalRecordApp {
             if(tempID == nurse.getId()) {
                 mainFrame.dispose();
                 openNameInput();
+
             } else if (tempID == defaultDoctor1.getId()){
                 mainFrame.dispose();
                 openDoctorWelcome(defaultDoctor1.getName()); // Open the welcome window for the doctor 
@@ -72,7 +73,7 @@ public class MedicalRecordApp {
             } else if (tempID == defaultDoctor2.getId()) {
                 mainFrame.dispose();
                 openDoctorWelcome(defaultDoctor2.getName());
-                //opendoctor2prgrm();
+                
             } else {
                 JOptionPane.showMessageDialog(mainFrame, "Invalid ID, please enter a valid ID");
             }
@@ -172,8 +173,8 @@ public class MedicalRecordApp {
     }
   }
 
-// Classe pour éditer un bouton dans une cellule
-static class ButtonEditor extends DefaultCellEditor {
+ // Classe pour éditer un bouton dans une cellule
+ static class ButtonEditor extends DefaultCellEditor {
     protected JButton button;
     private String label;
 
@@ -188,13 +189,26 @@ static class ButtonEditor extends DefaultCellEditor {
             if (table != null) {
                 int row = table.getSelectedRow(); // Obtenir la ligne sélectionnée
                 int column = table.getSelectedColumn(); // Obtenir la colonne sélectionnée
-
+        
+                // Affichage pour déboguer
+                System.out.println("Clic détecté sur la ligne " + row + ", colonne " + column);
+        
+                // Vérification des colonnes et des actions associées
                 if (column == 7) { // Si c'est la colonne "Prescription" (colonne 7 ici)
                     openPrescriptionWindow(); // Ouvre la fenêtre d'ordonnance
+                
+                } else if (column == 5) {
+                    openObservationOrDiagnosticWindow("Observation");// Ouvre la fenetre Observation
+                
+                } else if (column == 6) {
+                    openObservationOrDiagnosticWindow("Diagnostic");  // Ouvre la fenêtre Diagnostic
+                
+                } else if (column == 9) {
+                    openCertificateWindow();  // Ouvre la fenêtre certtificat
                 }
             }
         });
-    }
+    } 
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -280,10 +294,94 @@ static class ButtonEditor extends DefaultCellEditor {
     prescriptionFrame.setVisible(true);
 }
 
+/******* Méthode pour ouvrir la fenêtre Observation ou Diagnostic ******/
 
+
+private static void openObservationOrDiagnosticWindow(String title) {
+    JFrame window = new JFrame(title);
+    window.setSize(400, 300);
+    window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    window.setLayout(new BorderLayout());
+
+    // Titre en gras
+    JPanel titlePanel = new JPanel();
+    JLabel titleLabel = new JLabel(title);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titlePanel.add(titleLabel);
+    window.add(titlePanel, BorderLayout.NORTH);
+
+    // Zone de texte pour entrer l'observation ou diagnostic
+    JPanel inputPanel = new JPanel();
+    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+    inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    JTextArea inputArea = new JTextArea(5, 20);
+    JScrollPane scrollPane = new JScrollPane(inputArea);
+    inputPanel.add(scrollPane);
+    window.add(inputPanel, BorderLayout.CENTER);
+
+    // Boutons Enregistrer et Fermer
+    JPanel buttonPanel = new JPanel();
+    JButton saveButton = new JButton("Enregistrer");
+    JButton closeButton = new JButton("Fermer");
+
+    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(window, "Détails enregistrés!"));
+    closeButton.addActionListener(e -> window.dispose());
+
+    buttonPanel.add(saveButton);
+    buttonPanel.add(closeButton);
+    window.add(buttonPanel, BorderLayout.SOUTH);
+
+    window.setLocationRelativeTo(null);  // Centrer la fenêtre
+    window.setVisible(true);
+} 
+
+  /******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
+ 
+    
+    private static void openCertificateWindow() {
+    JFrame window = new JFrame("Certificate");
+    window.setSize(400, 300);
+    window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    window.setLayout(new BorderLayout());
+
+    // Titre en gras
+    JPanel titlePanel = new JPanel();
+    JLabel titleLabel = new JLabel("Certificate");
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titlePanel.add(titleLabel);
+    window.add(titlePanel, BorderLayout.NORTH);
+
+    // Zone de texte pour entrer les informations du certificat
+    JPanel inputPanel = new JPanel();
+    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+    inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    JTextArea inputArea = new JTextArea(5, 20);
+    JScrollPane scrollPane = new JScrollPane(inputArea);
+    inputPanel.add(scrollPane);
+    window.add(inputPanel, BorderLayout.CENTER);
+
+    // Boutons Enregistrer et Fermer
+    JPanel buttonPanel = new JPanel();
+    JButton saveButton = new JButton("Enregistrer");
+    JButton closeButton = new JButton("Fermer");
+
+    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(window, "Certificat enregistré!"));
+    closeButton.addActionListener(e -> window.dispose());
+
+    buttonPanel.add(saveButton);
+    buttonPanel.add(closeButton);
+    window.add(buttonPanel, BorderLayout.SOUTH);
+
+    window.setLocationRelativeTo(null);  // Centrer la fenêtre
+    window.setVisible(true);
+}
 
 
     /**** Method to enter patients info by nurse ****/
+    
+    
     private static void openNameInput() {
         JFrame nameFrame = new JFrame("Existence Verification");
         nameFrame.setSize(500, 300);
