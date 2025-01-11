@@ -1,5 +1,4 @@
-**This repository contains two distinct projects:
-**
+**This repository contains two distinct projects:**
 1- Medical Office Management System
 2 - 2D RPG Game
 
