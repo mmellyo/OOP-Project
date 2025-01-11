@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 
 public class MedicalRecordApp {
@@ -76,7 +78,11 @@ public class MedicalRecordApp {
             }
         } );  
     }
+
+
     /**** Method to display the "Welcome Doctor" window for the two doctors ****/
+
+
     private static void openDoctorWelcome(String doctorName) {
         JFrame doctorWelcomeFrame = new JFrame("Welcome Doctor");
         doctorWelcomeFrame.setSize(400, 300);  // Window size
@@ -95,11 +101,7 @@ public class MedicalRecordApp {
 
         // Créer le bouton "See Patient"
         JButton seePatientButton = new JButton("See Patient");
-        seePatientButton.addActionListener(e -> {
-            // Ici, vous pouvez ouvrir une nouvelle fenêtre pour voir les patients ou afficher les informations
-            JOptionPane.showMessageDialog(doctorWelcomeFrame, "Displaying patient information...");
-            // Vous pouvez également ajouter un appel à une méthode pour afficher les informations du patient
-        });
+        seePatientButton.addActionListener(e -> openPatientWindow());
         
         
         doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER); // add label to the window at the top of the window
@@ -119,14 +121,166 @@ public class MedicalRecordApp {
         doctorWelcomeFrame.add(buttonPanel, BorderLayout.SOUTH);
 
         // Afficher la fenêtre de bienvenue du médecin
-        doctorWelcomeFrame.setVisible(true);
-     
-       
-        
-       
-        
-        
+        doctorWelcomeFrame.setVisible(true);  
     }
+
+     
+    /**********      Methode open see patient window         *********/
+    
+    
+    private static void openPatientWindow() {
+        JFrame patientFrame = new JFrame("Today's Patients Informations");
+        patientFrame.setSize(800, 400);  // Taille de la fenêtre
+        patientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Fermer uniquement cette fenêtre
+        patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
+
+         // Définir les noms des colonnes
+        String[] columnNames = {"ID", "Name", "First Name", "Age", "Antecedent", "Observation", "Diagnostic", "Prescription", "Ultrasound", "Certificate"};
+        Object[][] data = {
+          {1, "patient", "default", 35, "Add", "Add", "Add", "Add", "Add", "Add"},
+          {2, "defaut", "patient", 40, "Add", "Add", "Add", "Add", "Add", "Add"},
+        // Ajoutez d'autres patients ici
+       };
+        // Créer le modèle du tableau
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        JTable table = new JTable(model);
+
+        // Ajouter des renderers et editors pour les colonnes contenant des boutons
+         for (int i = 4; i < columnNames.length; i++) {
+          table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
+          table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
+        }
+
+         // Ajouter le tableau dans un JScrollPane
+         JScrollPane scrollPane = new JScrollPane(table);
+         patientFrame.add(scrollPane, BorderLayout.CENTER);
+ 
+         // Afficher la fenêtre
+         patientFrame.setVisible(true);
+    }
+
+    // Classe pour rendre un bouton dans une cellule
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
+    public ButtonRenderer() {
+        setOpaque(true);
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        setText((value == null) ? "Add" : value.toString());
+        return this;
+    }
+  }
+
+// Classe pour éditer un bouton dans une cellule
+static class ButtonEditor extends DefaultCellEditor {
+    protected JButton button;
+    private String label;
+
+    public ButtonEditor(JTextField textField) {
+        super(textField);
+        button = new JButton();
+        button.setOpaque(true);
+
+        // Action listener pour détecter le clic sur "Add" dans la colonne Prescription
+        button.addActionListener(e -> {
+            JTable table = (JTable) SwingUtilities.getAncestorOfClass(JTable.class, button);
+            if (table != null) {
+                int row = table.getSelectedRow(); // Obtenir la ligne sélectionnée
+                int column = table.getSelectedColumn(); // Obtenir la colonne sélectionnée
+
+                if (column == 7) { // Si c'est la colonne "Prescription" (colonne 7 ici)
+                    openPrescriptionWindow(); // Ouvre la fenêtre d'ordonnance
+                }
+            }
+        });
+    }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        label = (value == null) ? "Add" : value.toString();
+        button.setText(label);
+        return button;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        return label;
+    }
+}
+
+    
+  /******** Method to display the prescription window ********/
+
+
+  private static void openPrescriptionWindow() {
+    // Créer la fenêtre d'ordonnance
+    JFrame prescriptionFrame = new JFrame("Prescription");
+    prescriptionFrame.setSize(400, 500); // Taille de la fenêtre
+    prescriptionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Fermer la fenêtre sans fermer l'application
+    prescriptionFrame.setLayout(new BorderLayout());
+
+    // ** Panel supérieur avec titre "Ordonnance" **
+    JLabel titleLabel = new JLabel("Prescription", SwingConstants.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Police en gras
+    prescriptionFrame.add(titleLabel, BorderLayout.NORTH);
+
+    // ** Panel central avec le formulaire d'ordonnance **
+    JPanel formPanel = new JPanel();
+    formPanel.setLayout(new GridLayout(5, 2, 10, 10)); // Grille 5 lignes, 2 colonnes
+    formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    JLabel doctorLabel = new JLabel("Doctor:");
+    JTextField doctorField = new JTextField("Dr.Hamdi "); // Nom par défaut du médecin
+    doctorField.setEditable(false); // Le champ est non modifiable
+
+    JLabel dateLabel = new JLabel("Date:");
+    JTextField dateField = new JTextField();
+
+    JLabel patientLabel = new JLabel("Patient:");
+    JTextField patientField = new JTextField();
+
+    JLabel ageLabel = new JLabel("Age:");
+    JTextField ageField = new JTextField();
+
+    JLabel medicationLabel = new JLabel("Medications:");
+    JTextArea medicationArea = new JTextArea(5, 20); // Zone de texte pour les médicaments
+    medicationArea.setLineWrap(true);
+    medicationArea.setWrapStyleWord(true);
+
+    // Ajouter les champs au formulaire
+    formPanel.add(doctorLabel);
+    formPanel.add(doctorField);
+    formPanel.add(dateLabel);
+    formPanel.add(dateField);
+    formPanel.add(patientLabel);
+    formPanel.add(patientField);
+    formPanel.add(ageLabel);
+    formPanel.add(ageField);
+    formPanel.add(medicationLabel);
+    formPanel.add(new JScrollPane(medicationArea));
+
+    prescriptionFrame.add(formPanel, BorderLayout.CENTER);
+
+    // ** Panel inférieur avec boutons pour enregistrer ou fermer **
+    JPanel buttonPanel = new JPanel();
+    JButton saveButton = new JButton("Enregistrer");
+    JButton closeButton = new JButton("Fermer");
+
+    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(prescriptionFrame, "Ordonnance enregistrée !"));
+    closeButton.addActionListener(e -> prescriptionFrame.dispose());
+
+    buttonPanel.add(saveButton);
+    buttonPanel.add(closeButton);
+
+    prescriptionFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+    // Afficher la fenêtre au centre de l'écran
+    prescriptionFrame.setLocationRelativeTo(null);
+    prescriptionFrame.setVisible(true);
+}
+
+
 
 
     /**** Method to enter patients info by nurse ****/
