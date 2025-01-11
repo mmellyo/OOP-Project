@@ -5,7 +5,7 @@
 
 **Branch** **Information**
 
-_Master_ _Branch_: Contains 2 folder, one fore the final code source of the Medical Office Management System project. the other for the presentation and the report 
+_Master_ _Branch_: Contains **2 folder**, one fore **the final code source ** of the Medical Office Management System project. the other for the **presentation and the report **
 the ppt presentation needs to be downloaded 
 
 _GAME_ _Branch_: Contains the 2D RPG Game project codesource with the resources.
