@@ -43,9 +43,9 @@ This project, available on the master branch, aims to minimize time and reduce e
 
 ---
 ### 4. Installation
-1). Clone the folder MOM to your local environment.
-2). Import the project into your IDE (use vs code it's better).
-3). Run the code to start the application.
+* Clone the folder MOM to your local environment.
+* Import the project into your IDE (use vs code it's better).
+* Run the code to start the application.
 
 ---
 ### 5. Future Enhancements
