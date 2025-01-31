@@ -34,7 +34,7 @@ This project, available on the master branch, aims to minimize time and reduce e
 * **Java** : Java serves as the primary language for developing the application's core logic
 
 <div align="center">
-  <img src="image-1.png" alt="alt text" width="200">
+  <img src="README/image-1.png" alt="alt text" width="200">
 </div>
 
 #### b). Programmation Oriented Object (OOP)
@@ -50,17 +50,17 @@ This project, available on the master branch, aims to minimize time and reduce e
 * **preview** :
   * patients and their information saved :
  
-  <img src="image-3.png" alt="alt text" width="400">
+  <img src="README/image-3.png" alt="alt text" width="400">
 
    * Implementation of calendar logic:
 
-    <img src="image-2.png" alt="alt text" width="200">
+    <img src="README/image-2.png" alt="alt text" width="200">
 
 
   * log int / out :
 
-    <img src="image-4.png" alt="alt text" width="200">
-    <img src="image-5.png" alt="alt text" width="170">
+    <img src="README/image-4.png" alt="alt text" width="200">
+    <img src="README/image-5.png" alt="alt text" width="170">
 
 
 
