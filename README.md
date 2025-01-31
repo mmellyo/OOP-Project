@@ -31,31 +31,58 @@ This project, available on the master branch, aims to minimize time and reduce e
 ---
 ### 3. Technologies Used 
 #### a). Language
-* Java
+* **Java** : Java serves as the primary language for developing the application's core logic
+
+<div align="center">
+  <img src="image-1.png" alt="alt text" width="200">
+</div>
+
 #### b). Programmation Oriented Object (OOP)
-* Classes : Patient, Doctor, Doctor1Calendar, Doctor2Calendar, Person, Nurse....
-* Inheritance : Doctor and Nurse inerit from Person.
-* Encapsulation : Use of getters and setters to control data access.
+* Classes : 'Patient', 'Doctor', 'Doctor1Calendar', 'Doctor2Calendar', 'Person,' 'Nurse'....
+* **Inheritance** : 'Doctor' and 'Nurse' Inherite from Person...
+* **Encapsulation** : Use of getters and setters to control data access.
+* **Polymorphism**: e.g : The 'Patient' class overrides the 'toString' method from the 'Person' class
+* Composition: The 'Doctor' class has a field of type 'ArrayList<Patient>', meaning it is composed of Patient objects. 
+* Constructors
+
 #### c). User Interface (UI)
 * Swing for a simple and functional grahical interface.
+* **preview** :
+  * patients and their information saved :
+ 
+  <img src="image-3.png" alt="alt text" width="400">
+
+   * Implementation of calendar logic:
+
+    <img src="image-2.png" alt="alt text" width="200">
+
+
+  * log int / out :
+
+    <img src="image-4.png" alt="alt text" width="200">
+    <img src="image-5.png" alt="alt text" width="170">
+
+
+
+
+
+
+
+
+
 #### d). Database
 * File to store data on patients and appointments.
 
 ---
 ### 4. Installation
-* Clone the folder MOM to your local environment.
-* Import the project into your IDE (use vs code it's better).
+* Clone the folder "MedicalOfficeManagment" to your local environment.
+* Import the project into your IDE (use VS code it's better).
 * Run the code to start the application.
 
----
-### 5. Future Enhancements
-* Use a real Database like MySQL / SQLite to store data on.
-* Integrate designed icons and images to replace text buttons and labels.
-* Add light and dark mode.
-* Allow users to choose their language from a list of options.
+
 
 ---
-### 6. Contributors
+### 5. Contributors
 * Hamdi Sarah  https://github.com/hamdisarah
 * Amer Yahia Mellissa  https://github.com/mmellyo 
 
