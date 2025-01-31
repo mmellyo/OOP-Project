@@ -33,7 +33,7 @@ Defeating the Skeleton King grants access to the castle, marking the game's vict
 ### d). Aggro and AI Logic
 The Mage and Skeleton King both have AI-controlled behavior.
 The Mage uses abilities to challenge the player in combat, while the Skeleton King targets the player with aggro logic during the boss fight.
-## e). Dynamic Combat Mechanics
+### e). Dynamic Combat Mechanics
 Combat involves managing both your character’s HP and Mana, and responding strategically to the Mage's ability and attacks and the Skeleton King's attacks.
 
 ## 3. Technologies Used
