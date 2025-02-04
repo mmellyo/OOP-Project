@@ -1,6 +1,9 @@
 # Shadow Adventure
+
 A **2D** action **RPG game** developed in Java **(swing)** using Object-Oriented Programming (OOP) principles. Players engage in a ***1v1*** battle against a mage, with unique abilities and animations, followed by a boss fight against the Skeleton King to progress into a castle.using ***AI logic***
 
+
+-
 ## 1. Overview
 Shadow Adventure puts players in a **1v1 battle** where you control the ***Warrior*** character, facing off against a **mage controlled by the AI**. Both characters have **unique abilities**, which come with animations that were custom-designed. The game features complex **collision logic**, as well as **HP**, **mana**, and **aggro mechanics**, adding depth to the combat system. After defeating the mage, the player proceeds to fight the ***Skeleton King***, a monster guarding the entrance to a castle. If the player defeats the king, they win the game. Additionally, the game features a **randomly generated position on the map** where the player can collect a mana boost. 
 
