@@ -1,5 +1,6 @@
+// NOUVELLE VERSION QUI PERMET DE DIFINIR LES JOURS BLOQUES POUR LE MEDECIN 1 
 import java.time.YearMonth;
-import java.awt.event.*;
+
 // Doctor1Calendar is a subclass
 public class Doctor1Calendar extends CalendarINFO { // The new class herite the methods and attributes of the CalendarINFO class
     public Doctor1Calendar(int year, int month) {
