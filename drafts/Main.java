@@ -1,8 +1,4 @@
-//********* OLD VERSION *********//
-//********* OLD VERSION *********//
-//********* OLD VERSION *********//
-
-
+// NOUVELLE VERSION AVEC DES IDEES AMELIORER ET SIMPLE POUR L'UTILISATEUR
 
 import java.time.LocalDate; // Class used to manipulate dates without times
 import javax.swing.*;
@@ -10,12 +6,12 @@ import java.awt.*;
 
 // Main class declaration
 public class Main { 
-    // public: Indicates that the class is accessible to everyone
-    // class main: the entry point of the program.
+    
 
     private static final Doctor1Calendar defaultDoctor1 = new Doctor1Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     private static final Doctor2Calendar defaultDoctor2 = new Doctor2Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     public static void main(String[] args) {
+
              // Launching the “Choose Doctor” window
              openChooseDoctor();
             }
