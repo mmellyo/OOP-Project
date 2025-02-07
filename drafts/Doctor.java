@@ -33,7 +33,7 @@ public class Doctor extends Person {
 
     // Method to update a patient's observations
     public void updatePatientObservation(Patient patient, String observation) {
-        patient.setPreviousObservation(observation);  // Update the patient's observation
+        patient.setObservation(observation);  // Update the patient's observation
     }
 
     // Method to display doctor's information
