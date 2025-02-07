@@ -1,48 +1,49 @@
-public class Patient extends Person {
-
-
-    private String previousObservations;
-    private String previousObservationsDcr;
+class Patient {
+    private int id;
+    private String name;
+    private String lastName;
+    private String phoneNumber;
     private String dateOfBirth;
+    private String observation;
+    private String prescription;
+    private String diagnostic;
 
-    // Constructor to initialize a new Patient object with all the necessary details
-    public Patient(int id, 
-                   String name,
-                   String lastName, 
-                   String phoneNumber, 
-                   String dateOfBirth, 
-                   String previousObservations, 
-                   String previousObservationsDcr) {
-
-        super(id, name, lastName, phoneNumber); // Call the constructor of the Person class
-        this.previousObservations = previousObservations;
-        this.previousObservationsDcr = previousObservationsDcr;
+    public Patient(int id, String name, String lastName, String phoneNumber, String dateOfBirth, String observation, String diagnostic, String prescription) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.observation = observation;
+        this.diagnostic = diagnostic;
+        this.prescription = prescription;
     }
 
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getLastName() { return lastName; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getDateOfBirth() { return dateOfBirth; }
+    public String getObservation() { return observation; }
+    public String getDiagnostic() { return diagnostic; }
+    public String getPrescription() { return prescription; }
 
-    // Getter methods
-    public String getPreviousObservations() {
-        return previousObservations;
-    }
+    public void setObservation(String observation) { this.observation = observation; }
+    public void setPrescription(String prescription) { this.prescription = prescription; }
+    public void setDiagnostic(String diagnostic) { this.diagnostic = diagnostic; }
 
-    public String getPreviousObservationsdcr() {
-        return previousObservationsDcr;
-    }
-
-    public String getbd() {
-        return dateOfBirth;
-    }
-
-    // Override the toString method to provide a string representation of the Patient object
     @Override
     public String toString() {
-        return "ID: " + getId() + "\nName: " + getName() + " " + getLastName() + "\nPhone Number: " + getPhoneNumber() + "\nDate of birth: " + getbd() + 
-              "\nprevious Observations dates: " + getPreviousObservations()+  "\nprevious Observations dates: " + getPreviousObservationsdcr();
+        return id + "," + name + "," + lastName + "," + phoneNumber + "," + dateOfBirth + "," + observation + "," + diagnostic + "," + prescription;
     }
 
-    // Setter method to set or update the previous observations of the patient
-    public void setPreviousObservation(String observation) {
-        this.previousObservations = observation;
+    public static Patient fromString(String line) {
+        String[] data = line.split(",");
+        if (data.length == 8) {
+            return new Patient(
+                Integer.parseInt(data[0]), data[1], data[2], data[3], data[4], data[5], data[6], data[7]
+            );
+        }
+        return null;
     }
 }

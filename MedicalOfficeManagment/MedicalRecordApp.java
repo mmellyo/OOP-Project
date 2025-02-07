@@ -1,4 +1,11 @@
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,13 +29,17 @@ public class MedicalRecordApp {
             0000,
             "patient",
             "default",
-            "05000000",
+            "0550607080",
             "2005-03-11",
-            "2024-11-01",
-            "Doctor1"
+            "default observation",
+            "default prescription",
+            "default med"
             );
 
         patientRecords.add(defaultPatient);
+
+        // Save the default patient to a file
+         savePatientToFile(defaultPatient);
 
         //Create default dcrs for testing purposes
         defaultDoctor1 = new Doctor(1111, "Amer Yahia", "lastName1", "Gynecologist" , "0511111111");
@@ -93,73 +104,85 @@ public class MedicalRecordApp {
         // Create a label with the welcome message
         JLabel welcomeLabel = new JLabel("Welcome Dr." + doctorName, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));  // text style 
-
+    
         // Créer un bouton de déconnexion (Log Out)
         JButton logoutButton = new JButton("Log Out");
         logoutButton.addActionListener(e -> {
-        doctorWelcomeFrame.dispose();
+            doctorWelcomeFrame.dispose();
         });
-
+    
         // Créer le bouton "See Patient"
         JButton seePatientButton = new JButton("See Patient");
         seePatientButton.addActionListener(e -> openPatientWindow());
-        
-        
-        doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER); // add label to the window at the top of the window
-        
+    
+        // Créer un panel pour les boutons
+        JPanel buttonPanel = new JPanel();
+        logoutButton.setPreferredSize(new Dimension(150, 50)); 
+        seePatientButton.setPreferredSize(new Dimension(150, 50));
+    
+        buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
+        buttonPanel.add(seePatientButton);  
+    
         // Ajouter l'étiquette au centre de la fenêtre
         doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER);
-
-        // Créer un panel pour le bouton "Log Out"
-       JPanel buttonPanel = new JPanel();
-       logoutButton.setPreferredSize(new Dimension(150, 50)); 
-       seePatientButton.setPreferredSize(new Dimension(150, 50));
-
-       buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
-       buttonPanel.add(seePatientButton);  
-
-        // Ajouter le panel contenant le bouton au bas de la fenêtre
+    
+        // Ajouter le panel contenant les boutons au bas de la fenêtre
         doctorWelcomeFrame.add(buttonPanel, BorderLayout.SOUTH);
-
+    
         // Afficher la fenêtre de bienvenue du médecin
         doctorWelcomeFrame.setVisible(true);  
     }
-
      
     /**********      Methode open see patient window         *********/
-    
     
     private static void openPatientWindow() {
         JFrame patientFrame = new JFrame("Today's Patients Informations");
         patientFrame.setSize(800, 400);  // Taille de la fenêtre
         patientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Fermer uniquement cette fenêtre
         patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
-
-         // Définir les noms des colonnes
-        String[] columnNames = {"ID", "Name", "First Name", "Age", "Antecedent", "Observation", "Diagnostic", "Prescription", "Ultrasound", "Certificate"};
-        Object[][] data = {
-          {1, "patient", "default", 35, "Add", "Add", "Add", "Add", "Add", "Add"},
-          {2, "defaut", "patient", 40, "Add", "Add", "Add", "Add", "Add", "Add"},
-        // Ajoutez d'autres patients ici
-       };
-        // Créer le modèle du tableau
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+    
+        // Définir les noms des colonnes
+        String[] columnNames = {"ID", "Name", "First Name", "Phone Number", "Date of Birth", "Observation", "Diagnostic", "Prescription"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(model);
-
-        // Ajouter des renderers et editors pour les colonnes contenant des boutons
-         for (int i = 4; i < columnNames.length; i++) {
-          table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
-          table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
+    
+        // Read patient files and populate the table
+        File folder = new File("."); // Current directory
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.startsWith("patient_") && name.endsWith(".txt"));
+    
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                String fileName = file.getName();
+                int patientId = Integer.parseInt(fileName.substring(8, fileName.length() - 4)); // Extract patient ID from filename
+                Patient patient = readPatientFromFile(patientId);
+                if (patient != null) {
+                    model.addRow(new Object[]{
+                        patient.getId(),
+                        patient.getName(),
+                        patient.getLastName(),
+                        patient.getPhoneNumber(),
+                        patient.getDateOfBirth(),
+                        patient.getObservation(),
+                        patient.getDiagnostic(),
+                        patient.getPrescription()
+                    });
+                }
+            }
         }
-
-         // Ajouter le tableau dans un JScrollPane
-         JScrollPane scrollPane = new JScrollPane(table);
-         patientFrame.add(scrollPane, BorderLayout.CENTER);
- 
-         // Afficher la fenêtre
-         patientFrame.setVisible(true);
+    
+        // Ajouter des renderers et editors pour les colonnes contenant des boutons
+        for (int i = 4; i < columnNames.length; i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
+            table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
+        }
+    
+        // Ajouter le tableau dans un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        patientFrame.add(scrollPane, BorderLayout.CENTER);
+    
+        // Afficher la fenêtre
+        patientFrame.setVisible(true);
     }
-
     // Classe pour rendre un bouton dans une cellule
     static class ButtonRenderer extends JButton implements TableCellRenderer {
     public ButtonRenderer() {
@@ -168,7 +191,9 @@ public class MedicalRecordApp {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setText((value == null) ? "Add" : value.toString());
+        setText("Edit");
+
+        //setText((value == null) ? "Add" : value.toString());
         return this;
     }
   }
@@ -190,18 +215,18 @@ public class MedicalRecordApp {
                 int row = table.getSelectedRow(); // Obtenir la ligne sélectionnée
                 int column = table.getSelectedColumn(); // Obtenir la colonne sélectionnée
         
-                // Affichage pour déboguer
+                // Affichage pdqour déboguer
                 System.out.println("Clic détecté sur la ligne " + row + ", colonne " + column);
         
                 // Vérification des colonnes et des actions associées
                 if (column == 7) { // Si c'est la colonne "Prescription" (colonne 7 ici)
-                    openPrescriptionWindow(); // Ouvre la fenêtre d'ordonnance
+                    openPrescriptionWindow((int) table.getValueAt(row, 0)); // Ouvre la fenêtre d'ordonnance
                 
                 } else if (column == 5) {
-                    openObservationOrDiagnosticWindow("Observation");// Ouvre la fenetre Observation
+                    openObservationOrDiagnosticWindow("Observation", (int) table.getValueAt(row, 0));// Ouvre la fenetre Observation
                 
                 } else if (column == 6) {
-                    openObservationOrDiagnosticWindow("Diagnostic");  // Ouvre la fenêtre Diagnostic
+                    openObservationOrDiagnosticWindow("Diagnostic", (int) table.getValueAt(row, 0));  // Ouvre la fenêtre Diagnostic
                 
                 } else if (column == 9) {
                     openCertificateWindow();  // Ouvre la fenêtre certtificat
@@ -212,7 +237,9 @@ public class MedicalRecordApp {
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        label = (value == null) ? "Add" : value.toString();
+        label = "Edit";
+
+        //label = (value == null) ? "Add" : value.toString();
         button.setText(label);
         return button;
     }
@@ -227,7 +254,8 @@ public class MedicalRecordApp {
   /******** Method to display the prescription window ********/
 
 
-  private static void openPrescriptionWindow() {
+// Method to open the prescription window with patient details
+private static void openPrescriptionWindow(int patientId) {
     // Créer la fenêtre d'ordonnance
     JFrame prescriptionFrame = new JFrame("Prescription");
     prescriptionFrame.setSize(400, 500); // Taille de la fenêtre
@@ -245,22 +273,36 @@ public class MedicalRecordApp {
     formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
     JLabel doctorLabel = new JLabel("Doctor:");
-    JTextField doctorField = new JTextField("Dr.Hamdi "); // Nom par défaut du médecin
+    JTextField doctorField = new JTextField("Dr.... "); // Nom par défaut du médecin
     doctorField.setEditable(false); // Le champ est non modifiable
 
     JLabel dateLabel = new JLabel("Date:");
     JTextField dateField = new JTextField();
+    dateField.setEditable(false); // Le champ est non modifiable
+
+    // Set today's date in the date field
+    dateField.setText(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));
 
     JLabel patientLabel = new JLabel("Patient:");
     JTextField patientField = new JTextField();
+    patientField.setEditable(false); // Le champ est non modifiable
 
-    JLabel ageLabel = new JLabel("Age:");
-    JTextField ageField = new JTextField();
+    JLabel bdLabel = new JLabel("date of birth:");
+    JTextField bdField = new JTextField();
+    bdField.setEditable(false); // Le champ est non modifiable
 
     JLabel medicationLabel = new JLabel("Medications:");
     JTextArea medicationArea = new JTextArea(5, 20); // Zone de texte pour les médicaments
     medicationArea.setLineWrap(true);
     medicationArea.setWrapStyleWord(true);
+
+    // Load patient details
+    Patient patient = readPatientFromFile(patientId);
+    if (patient != null) {
+        patientField.setText(patient.getName() + " " + patient.getLastName());
+        bdField.setText(patient.getDateOfBirth()); 
+        medicationArea.setText(patient.getPrescription()); // Load existing prescription if available
+    }
 
     // Ajouter les champs au formulaire
     formPanel.add(doctorLabel);
@@ -269,8 +311,8 @@ public class MedicalRecordApp {
     formPanel.add(dateField);
     formPanel.add(patientLabel);
     formPanel.add(patientField);
-    formPanel.add(ageLabel);
-    formPanel.add(ageField);
+    formPanel.add(bdLabel);
+    formPanel.add(bdField);
     formPanel.add(medicationLabel);
     formPanel.add(new JScrollPane(medicationArea));
 
@@ -281,7 +323,13 @@ public class MedicalRecordApp {
     JButton saveButton = new JButton("Enregistrer");
     JButton closeButton = new JButton("Fermer");
 
-    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(prescriptionFrame, "Ordonnance enregistrée !"));
+    saveButton.addActionListener(e -> {
+        if (patient != null) {
+            patient.setPrescription(medicationArea.getText());
+            savePatientToFile(patient);
+            JOptionPane.showMessageDialog(prescriptionFrame, "prescription saved!");
+        }
+    });
     closeButton.addActionListener(e -> prescriptionFrame.dispose());
 
     buttonPanel.add(saveButton);
@@ -297,7 +345,7 @@ public class MedicalRecordApp {
 /******* Méthode pour ouvrir la fenêtre Observation ou Diagnostic ******/
 
 
-private static void openObservationOrDiagnosticWindow(String title) {
+private static void openObservationOrDiagnosticWindow(String title, int patientId) {
     JFrame window = new JFrame(title);
     window.setSize(400, 300);
     window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -320,52 +368,33 @@ private static void openObservationOrDiagnosticWindow(String title) {
     inputPanel.add(scrollPane);
     window.add(inputPanel, BorderLayout.CENTER);
 
-    // Boutons Enregistrer et Fermer
-    JPanel buttonPanel = new JPanel();
-    JButton saveButton = new JButton("Enregistrer");
-    JButton closeButton = new JButton("Fermer");
-
-    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(window, "Détails enregistrés!"));
-    closeButton.addActionListener(e -> window.dispose());
-
-    buttonPanel.add(saveButton);
-    buttonPanel.add(closeButton);
-    window.add(buttonPanel, BorderLayout.SOUTH);
-
-    window.setLocationRelativeTo(null);  // Centrer la fenêtre
-    window.setVisible(true);
-} 
-
-  /******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
-  private static void openCertificateWindow() {
-    JFrame window = new JFrame("Certificate");
-    window.setSize(400, 300);
-    window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    window.setLayout(new BorderLayout());
-
-    // Titre en gras
-    JPanel titlePanel = new JPanel();
-    JLabel titleLabel = new JLabel("Certificate");
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titlePanel.add(titleLabel);
-    window.add(titlePanel, BorderLayout.NORTH);
-
-    // Zone de texte pour entrer les informations du certificat
-    JPanel inputPanel = new JPanel();
-    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-    inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-    JTextArea inputArea = new JTextArea(5, 20);
-    JScrollPane scrollPane = new JScrollPane(inputArea);
-    inputPanel.add(scrollPane);
-    window.add(inputPanel, BorderLayout.CENTER);
+    // Load existing observation or diagnostic if available
+    Patient patient = readPatientFromFile(patientId);
+    if (patient != null) {
+        if (title.equals("Observation")) {
+            inputArea.setText(patient.getObservation());
+        } else if (title.equals("Diagnostic")) {
+            inputArea.setText(patient.getDiagnostic());
+        }
+    }
 
     // Boutons Enregistrer et Fermer
     JPanel buttonPanel = new JPanel();
     JButton saveButton = new JButton("Enregistrer");
     JButton closeButton = new JButton("Fermer");
 
-    saveButton.addActionListener(e -> JOptionPane.showMessageDialog(window, "Certificat enregistré!"));
+    saveButton.addActionListener(e -> {
+        if (patient != null) {
+            if (title.equals("Observation")) {
+                patient.setObservation(inputArea.getText());
+            } else if (title.equals("Diagnostic")) {
+                patient.setDiagnostic(inputArea.getText());
+            }
+            savePatientToFile(patient);
+            JOptionPane.showMessageDialog(window, "Détails enregistrés!");
+        }
+    });
+
     closeButton.addActionListener(e -> window.dispose());
 
     buttonPanel.add(saveButton);
@@ -375,6 +404,12 @@ private static void openObservationOrDiagnosticWindow(String title) {
     window.setLocationRelativeTo(null);  // Centrer la fenêtre
     window.setVisible(true);
 }
+
+
+/******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
+    private static void openCertificateWindow() {
+       
+    }
 
 
     /**** Method to enter patients info by nurse ****/
@@ -425,7 +460,7 @@ private static void openObservationOrDiagnosticWindow(String title) {
             }
 
             if (!patientFound) {
-                //if patient not found -> display his infos
+                //if patient not found -> enter his infos
                 resultLabel.setText("Patient not found. Please enter details.");
                 resultLabel.setForeground(Color.RED);
                 collectPatientDetails(firstName, lastName);
@@ -512,28 +547,83 @@ private static void openObservationOrDiagnosticWindow(String title) {
                 String name = nameField.getText();
                 String lastname = lastnameField.getText();
                 String dateOfBirth = birthdayField.getText();
-    
+
+                // Validate input
+                if (name.isEmpty() || lastname.isEmpty() || dateOfBirth.isEmpty() || phoneNumber.isEmpty()) {
+                    JOptionPane.showMessageDialog(detailsFrame, "All fields must be filled!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Checks if phone is exactly 10 digits
+                if (!phoneNumber.matches("\\d{10}")) { 
+                    JOptionPane.showMessageDialog(detailsFrame, "Invalid phone number! Enter 10 digits.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Create new Patient object +  add it to the list
-                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "none");
+                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "none", "none");
                 patientRecords.add(newPatient);
-    
+
+                // Save patient details to a file
+                savePatientToFile(newPatient);
+
                 // Confirmation message - open doctor selection
                 JOptionPane.showMessageDialog(detailsFrame, 
                 "Patient registered successfully!\nID: " + id, 
                 "Registration Success", JOptionPane.INFORMATION_MESSAGE);
             
               openChooseDoctor(); 
-              detailsFrame.dispose();
+              //detailsFrame.dispose();
+              detailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
             } catch (NumberFormatException ex) {
                 // If the input for phone number is invalid, show an error message
                 JOptionPane.showMessageDialog(detailsFrame, "Please enter a valid phone number.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
-    
 
-    //**** Method to open "Choose Doctor" window ******//
-    private static void openChooseDoctor() {
+    // Method to save patient details to a file
+    private static void savePatientToFile(Patient patient) {
+        String filename = "patient_" + patient.getId() + ".txt";
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            out.println("ID: " + patient.getId());
+            out.println("Name: " + patient.getName());
+            out.println("Last Name: " + patient.getLastName());
+            out.println("Phone Number: " + patient.getPhoneNumber());
+            out.println("Date of Birth: " + patient.getDateOfBirth());
+            out.println(" Observations: " + patient.getObservation());
+            out.println(" diagnostic: " + patient.getDiagnostic());
+            out.println("prescription: " + patient.getPrescription());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to read patient details from a file
+    private static Patient readPatientFromFile(int patientId) {
+        String filename = "patient_" + patientId + ".txt";
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            int id = Integer.parseInt(br.readLine().split(": ")[1]);
+            String name = br.readLine().split(": ")[1];
+            String lastName = br.readLine().split(": ")[1];
+            String phoneNumber = br.readLine().split(": ")[1];
+            String dateOfBirth = br.readLine().split(": ")[1];
+            String Observations = br.readLine().split(": ")[1];
+            String diagnostic = br.readLine().split(": ")[1];
+            String prescription = br.readLine().split(": ")[1];
+
+            return new Patient(id, name, lastName, phoneNumber, dateOfBirth, Observations, diagnostic, prescription);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+        //**** Method to open "Choose Doctor" window ******//
+        private static void openChooseDoctor() {
         JFrame doctorFrame = new JFrame("Choose Doctor");
         doctorFrame.setSize(400, 600);
         doctorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

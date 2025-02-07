@@ -23,9 +23,9 @@ public class Doctor extends Person {
 
     // Method to view a patient's information by number
     /*public Patient viewPatientInfo(int phoneNumber) {
-        for (Patient tempPatient : patientsList) {   
-            if (tempPatient.getPhoneNumber() == phoneNumber) {
-                return tempPatient;  // Return the patient if found
+        for (Patient temPatient : patientsList) {   
+            if (temPatient.getPhoneNumber() == phoneNumber) {
+                return temPatient;  // Return the patient if found
             }
         }
         return null;  // Return null if patient not found
@@ -33,7 +33,7 @@ public class Doctor extends Person {
 
     // Method to update a patient's observations
     public void updatePatientObservation(Patient patient, String observation) {
-        patient.setPreviousObservation(observation);  // Update the patient's observation
+        patient.setObservation(observation);  // Update the patient's observation
     }
 
     // Method to display doctor's information
