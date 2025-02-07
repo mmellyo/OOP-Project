@@ -142,7 +142,7 @@ public class MedicalRecordApp {
         patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
     
         // Définir les noms des colonnes
-        String[] columnNames = {"ID", "Name", "First Name", "Phone Number", "Date of Birth", "Observation", "Diagnostic", "Prescription"};
+        String[] columnNames = {"ID", "Name", "First Name", "Date of Birth", "Antecedent" ,"Observation", "Diagnostic", "Prescription"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(model);
     
@@ -160,8 +160,9 @@ public class MedicalRecordApp {
                         patient.getId(),
                         patient.getName(),
                         patient.getLastName(),
-                        patient.getPhoneNumber(),
                         patient.getDateOfBirth(),
+
+                        "not yet",
                         patient.getObservation(),
                         patient.getDiagnostic(),
                         patient.getPrescription()

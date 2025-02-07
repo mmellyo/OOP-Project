@@ -1,9 +1,8 @@
 ID: 514
 Name: p
 Last Name: d
-Phone Number: 1111111111
-Date of Birth: 1
-Observations: test ooo
-Diagnostic: test ddd
-Prescription: test ppp
-Antecedent: nn 
+Phone Number: 1178
+Date of Birth: test ooo
+ Observations: test ooo
+ diagnostic: test ddd
+prescription: test ppp 

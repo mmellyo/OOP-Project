@@ -1,10 +1,8 @@
 ID: 215
 Name: new
 Last Name: test
-Phone Number: 0102030405
-Date of Birth: 1
- Observations: test o t1
- diagnostic: test d t1
-prescription: med 1 t1
-Antecedent:  med
-
+Phone Number: 2025
+Date of Birth: test o t1
+ Observations: obv done
+ diagnostic: diago done
+prescription:  med done
