@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +14,9 @@ import javax.swing.table.TableCellRenderer;
 
 
 public class MedicalRecordApp {
-    private static Map<Integer, String> doctorName = new HashMap<>(); // Global static variable
+
+    
+   // private static Map<Integer, String> doctorName = new HashMap<>(); // Global static variable
     
     //Lists to store the patient & medical records
     private static ArrayList<Patient> patientRecords = new ArrayList<>();  //an ArrayList that hold objects of type Patient.
@@ -94,6 +97,10 @@ public class MedicalRecordApp {
             }
         } );  
     }
+
+
+
+
     // Method to save patient details to a file
     private static void savePatientToFile(Patient patient) {
         String filename = "patient_" + patient.getId() + ".txt";
@@ -290,9 +297,6 @@ public class MedicalRecordApp {
         return label;
     }
 }
-
-    
-  /******** Method to display the prescription window ********/
 
 
 // Method to open the prescription window with patient details
@@ -731,9 +735,9 @@ private static void updatePatientRecord(int patientId, String newValue, String f
         JPanel doctorPanel = new JPanel(new GridLayout(4, 1));
 
         JLabel chooseLabel = new JLabel("Which doctor would you like to add the visit to?");
-        JButton doctor1Button = new JButton(defaultDoctor1.getName());
-        JButton doctor2Button = new JButton(defaultDoctor2.getName());
-       
+        JButton doctor1Button = new JButton("Doctor 1: Obstetrician"); // I add some modification doctor speciality
+        JButton doctor2Button = new JButton("Doctor 2: Gynecologist"); // I add some modification doctor speciality (if you don't like it tell me!)
+        
         doctorPanel.add(chooseLabel);
         doctorPanel.add(doctor1Button);
         doctorPanel.add(doctor2Button);
@@ -744,21 +748,26 @@ private static void updatePatientRecord(int patientId, String newValue, String f
 
 
         // action listeners to each button
+        // for Doctor 1
         doctor1Button.addActionListener(e -> {
             JOptionPane.showMessageDialog(doctorFrame, "You have chosen Dr. " + defaultDoctor1.getName());
-            //openDoctor1Program();
-            //doctorFrame.dispose(); 
+            openDoctor1Calendar();
+            doctorFrame.dispose(); 
         });
     
-        doctor2Button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(doctorFrame, "You have chosen Dr. " + defaultDoctor2.getName());
-            //openDoctor2Program();
-            //doctorFrame.dispose();
-        });
+        // doctor2Button.addActionListener(e -> {
+        //     JOptionPane.showMessageDialog(doctorFrame, "You have chosen Dr. " + defaultDoctor2.getName());
+        //     //openDoctor2Program();
+        //     doctorFrame.dispose();
+        // });
     }
-    
 
+ LocalDate currentDate = LocalDate.now(); // Get the current date and store it in a variable named currentDate
 
+    //Method to open doctor 1 calendar 
+    private static void openDoctor1Calendar() {
+        new Doctor1GUI(defaultDoctor1);
+    }
 
     // Method to find a patient by their email address
   /*  private static Patient findPatientByNumber(String email) {
