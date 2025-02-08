@@ -61,6 +61,7 @@ public class MedicalRecordApp {
         mainFrame.setSize(400, 300);          
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        mainFrame.setLocationRelativeTo(null);
 
         JPanel loginPanel = new JPanel(new GridLayout(4, 1));
         JLabel welcomeLabel = new JLabel("Welcome!");
@@ -142,7 +143,7 @@ public class MedicalRecordApp {
     /**** Method to display the "Welcome Doctor" window for the two doctors ****/
     private static void openDoctorWelcome(String doctorName) {
         JFrame doctorWelcomeFrame = new JFrame("Welcome Doctor");
-        doctorWelcomeFrame.setSize(400, 300);  // Window size
+        doctorWelcomeFrame.setSize(600, 500);  // Window size
         doctorWelcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         doctorWelcomeFrame.setLocationRelativeTo(null);  // Center of the window
         
@@ -155,17 +156,25 @@ public class MedicalRecordApp {
         logoutButton.addActionListener(e -> {
             doctorWelcomeFrame.dispose();
         });
+
+        // Créer un bouton de "See Today Patient"
+        JButton seeTodayPatientButton = new JButton("See Today Patient");
+        logoutButton.addActionListener(e -> {
+            doctorWelcomeFrame.dispose();
+        });
     
-        // Créer le bouton "See Patient"
-        JButton seePatientButton = new JButton("See Patient");
+        // Créer le bouton "See all Patient"
+        JButton seePatientButton = new JButton("See All Patient");
         seePatientButton.addActionListener(e -> openPatientWindow());
     
         // Créer un panel pour les boutons
         JPanel buttonPanel = new JPanel();
         logoutButton.setPreferredSize(new Dimension(150, 50)); 
+        seeTodayPatientButton.setPreferredSize(new Dimension(150, 50)); 
         seePatientButton.setPreferredSize(new Dimension(150, 50));
     
         buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
+        buttonPanel.add(seeTodayPatientButton);
         buttonPanel.add(seePatientButton);  
     
         // Ajouter l'étiquette au centre de la fenêtre
@@ -182,8 +191,12 @@ public class MedicalRecordApp {
     
     private static void openPatientWindow() {
         JFrame patientFrame = new JFrame("Today's Patients Informations");
-        patientFrame.setSize(800, 400);  // Taille de la fenêtre
         patientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Fermer uniquement cette fenêtre
+
+        // Get the screen size and set the frame size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        patientFrame.setSize(screenSize.width, screenSize.height);
+
         patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
     
         // Définir les noms des colonnes
@@ -304,7 +317,7 @@ public class MedicalRecordApp {
 private static void openPrescriptionWindow(int patientId) {
     // Créer la fenêtre d'ordonnance
     JFrame prescriptionFrame = new JFrame("Prescription");
-    prescriptionFrame.setSize(400, 500); // Taille de la fenêtre
+    prescriptionFrame.setSize(600, 700); // Taille de la fenêtre
     prescriptionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Fermer la fenêtre sans fermer l'application
     prescriptionFrame.setLayout(new BorderLayout());
 
@@ -392,7 +405,7 @@ private static void openPrescriptionWindow(int patientId) {
 /******* Méthode pour ouvrir la fenêtre Observation ou Diagnostic ******/
 private static void openObservationOrDiagnosticWindow(String title, int patientId) {
     JFrame window = new JFrame(title);
-    window.setSize(400, 300);
+    window.setSize(600, 500);
     window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     window.setLayout(new BorderLayout());
 
@@ -535,7 +548,7 @@ private static void updatePatientRecord(int patientId, String newValue, String f
     /**** Method to enter patients info by nurse ****/
     private static void openNameInput() {
         JFrame nameFrame = new JFrame("Existence Verification");
-        nameFrame.setSize(500, 300);
+        nameFrame.setSize(600, 400);
         JPanel namePanel = new JPanel(new GridLayout(4, 1));  // Increased row count for an extra message
 
         JLabel firstNameLabel = new JLabel("Enter patient's First Name:");
@@ -553,6 +566,8 @@ private static void updatePatientRecord(int patientId, String newValue, String f
         namePanel.add(resultLabel);
 
         nameFrame.add(namePanel);
+
+        nameFrame.setLocationRelativeTo(null);
         nameFrame.setVisible(true);
 
         // Action listener for the submit button
@@ -572,6 +587,7 @@ private static void updatePatientRecord(int patientId, String newValue, String f
                 if (tempPatient.getName().equalsIgnoreCase(firstName) && tempPatient.getLastName().equalsIgnoreCase(lastName)) {
                     //if existant patient -> display his infos
                     handleFoundPatient(tempPatient);
+                    //nameFrame.dispose();
                     resultLabel.setText("Patient found!");
                     resultLabel.setForeground(Color.GREEN);
                     patientFound = true;
@@ -584,6 +600,8 @@ private static void updatePatientRecord(int patientId, String newValue, String f
                 resultLabel.setText("Patient not found. Please enter details.");
                 resultLabel.setForeground(Color.RED);
                 collectPatientDetails(firstName, lastName);
+                //nameFrame.dispose();
+
             }
         });
     }
@@ -591,46 +609,60 @@ private static void updatePatientRecord(int patientId, String newValue, String f
             
     //**** Method to output registered patient details******//
     private static void handleFoundPatient(Patient patient) {
-        // display patient information
+        // Create frame
         JFrame patientInfoFrame = new JFrame("Patient Details");
-        patientInfoFrame.setSize(400, 300);
         patientInfoFrame.setLayout(new BorderLayout());
-        
-        // Create a text area to display patient details
-        JTextArea patientInfoArea = new JTextArea(patient.toString());
-        patientInfoArea.setEditable(false);
-        patientInfoFrame.add(new JScrollPane(patientInfoArea), BorderLayout.CENTER);  //JScrollPane: Wraps the JTextArea with scrollbars.
-        
-        //button panel
+        patientInfoFrame.setSize(600, 400);
+
+        // Split patient information into an array
+        String[] patientDetails = patient.toString().split(",");
+    
+        // Labels for each field
+        String[] fieldNames = {
+            "ID:", "First Name:", "Last Name:", "Phone Number:", 
+            "Date of Birth:", "Antecedent:", "Observation:", 
+            "Diagnostic:", "Prescription:"
+        };
+    
+        // Create a panel to hold labels
+        JPanel infoPanel = new JPanel(new GridLayout(patientDetails.length, 1, 10, 10)); // One row per detail
+    
+        for (int i = 0; i < patientDetails.length; i++) {
+            JLabel label = new JLabel(fieldNames[i] + " " + patientDetails[i]);
+            label.setFont(new Font("Arial", Font.PLAIN, 18)); // Set font size
+            infoPanel.add(label);
+        }
+    
+        // Wrap infoPanel in a scrollable view
+        JScrollPane scrollPane = new JScrollPane(infoPanel);
+        patientInfoFrame.add(scrollPane, BorderLayout.CENTER);
+    
+        // Buttons panel
         JPanel buttonPanel = new JPanel();
         JButton addAppointmentButton = new JButton("Add New Appointment");
         JButton closeButton = new JButton("Close");
         buttonPanel.add(addAppointmentButton);
         buttonPanel.add(closeButton);
-
         patientInfoFrame.add(buttonPanel, BorderLayout.SOUTH);
-        
-        //Display  frame
-        patientInfoFrame.setLocationRelativeTo(null);
+    
+        // Display frame
         patientInfoFrame.setVisible(true);
-        
-        // Action listener for the "Add New Appointment" button
+    
+        // Button actions
         addAppointmentButton.addActionListener(e -> {
             openChooseDoctor();
             patientInfoFrame.dispose();
         });
     
-        // Action listener for the "Close" button
         closeButton.addActionListener(e -> patientInfoFrame.dispose());
     }
-    
         
 
     //**** Method to collect additional patient details******//
     private static void collectPatientDetails(String firstName, String lastName) {
         JFrame detailsFrame = new JFrame("Enter Patient Details");
-        detailsFrame.setSize(400, 400); 
-        detailsFrame.setLocationRelativeTo(null);
+        detailsFrame.setSize(600, 400); 
+        //detailsFrame.setLocationRelativeTo(null);
         JPanel detailspanel = new JPanel(new GridLayout(6, 2));
     
         // Pre-fill name and last name fields
@@ -692,7 +724,7 @@ private static void updatePatientRecord(int patientId, String newValue, String f
                 "Registration Success", JOptionPane.INFORMATION_MESSAGE);
             
               openChooseDoctor(); 
-              //detailsFrame.dispose();
+              detailsFrame.dispose();
               detailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             } catch (NumberFormatException ex) {
@@ -731,7 +763,7 @@ private static void updatePatientRecord(int patientId, String newValue, String f
         //**** Method to open "Choose Doctor" window ******//
         private static void openChooseDoctor() {
         JFrame doctorFrame = new JFrame("Choose Doctor");
-        doctorFrame.setSize(400, 600);
+        doctorFrame.setSize(600, 800);
         doctorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel doctorPanel = new JPanel(new GridLayout(4, 1));
 
@@ -744,6 +776,8 @@ private static void updatePatientRecord(int patientId, String newValue, String f
         doctorPanel.add(doctor2Button);
         
         doctorFrame.add(doctorPanel);
+
+        doctorFrame.setLocationRelativeTo(null);
         doctorFrame.setVisible(true);
         
 
