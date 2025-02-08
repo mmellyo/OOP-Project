@@ -249,7 +249,7 @@ public class MedicalRecordApp {
                     openObservationOrDiagnosticWindow("Diagnostic", (int) table.getValueAt(row, 0));  // Ouvre la fenêtre Diagnostic
                 
                 } else if (column == 9) {
-                    openCertificateWindow();  // Ouvre la fenêtre certtificat
+                    MedicalCertificateGenerator.generatePDF("Jane Doe", "1985-08-22", "Hypertension", "Dr. Adams", "Central Clinic", 10);
                 }
             }
         });
@@ -438,10 +438,19 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
 }
 
 
-/******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
-    private static void openCertificateWindow() {
-       
-    }
+// /******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
+//     private static void openCertificateWindow(int patientId) {
+        
+//     }
+
+//     // Méthode pour enregistrer le certificat dans un fichier
+//     private static void saveCertificateToFile(int patientId, String content) {
+//         try (PrintWriter writer = new PrintWriter("certificate_" + patientId + ".txt")) {
+//             writer.println(content);
+//         } catch (Exception e) {
+//             e.printStackTrace();
+//         }
+//     }
 
 
     /**** Method to enter patients info by nurse ****/
