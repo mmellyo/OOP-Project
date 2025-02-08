@@ -17,7 +17,8 @@ public class MedicalRecordApp {
 
     
    // private static Map<Integer, String> doctorName = new HashMap<>(); // Global static variable
-    
+   private static final Doctor1Calendar defaultCDoctor1 = new Doctor1Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+
     //Lists to store the patient & medical records
     private static ArrayList<Patient> patientRecords = new ArrayList<>();  //an ArrayList that hold objects of type Patient.
     private static ArrayList<Doctor> doctorsRecords = new ArrayList<>();    //an ArrayList that hold objects of type dcrs.
@@ -69,7 +70,7 @@ public class MedicalRecordApp {
         
         loginPanel.add(welcomeLabel);
         loginPanel.add(IDLabel);
-        loginPanel.add(IDField);
+        loginPanel.add(IDField); 
         loginPanel.add(submiButton);
 
         mainFrame.add(loginPanel);
@@ -766,7 +767,7 @@ private static void updatePatientRecord(int patientId, String newValue, String f
 
     //Method to open doctor 1 calendar 
     private static void openDoctor1Calendar() {
-        new Doctor1GUI(defaultDoctor1);
+        new Doctor1GUI(defaultCDoctor1);
     }
 
     // Method to find a patient by their email address

@@ -8,7 +8,7 @@
 // public class Main { 
     
 
-//     private static final Doctor1Calendar defaultDoctor1 = new Doctor1Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+//     private static final Doctor1Calendar defaultCDoctor1 = new Doctor1Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
 //   //  private static final Doctor2Calendar defaultDoctor2 = new Doctor2Calendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
 //     public static void main(String[] args) {
 
@@ -56,7 +56,7 @@
 //         // Method to open doctor 1 calendar 
 //          private static void openDoctor1Calendar() {
 //             //  Display Docteur's 1 GUI Calendar
-//             new Doctor1GUI(defaultDoctor1);
+//             new Doctor1GUI(defaultCDoctor1);
 //         } 
 
         

@@ -4,5 +4,5 @@ public class Nurse extends Person {
         super(id, name, lastName, phoneNumber);  // Call the constructor of the Person class
     }
 
-    public int getId() { return id; }
+    // public int getId() { return id; }
 }
