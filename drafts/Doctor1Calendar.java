@@ -1,4 +1,5 @@
-// NOUVELLE VERSION QUI PERMET DE DIFINIR LES JOURS BLOQUES POUR LE MEDECIN 1 
+// PAS DE MODIFICATION
+
 import java.time.YearMonth;
 
 // Doctor1Calendar is a subclass
