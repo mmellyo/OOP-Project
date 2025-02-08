@@ -1,5 +1,5 @@
-// NORMALEMEMNT J'AI RIEN CHANGE DANS CE CODE. 
-// IL EST IDENTIQUE A CELUI QUI CE TROUVE DANS LE FCHIER ' CalendarINFO.java'
+// NOUVEAU
+
 
 import java.time.YearMonth; // Importing YearMonth class from Java to represent year/month and methods to manipulate this data
 import java.time.LocalDate; // It allows the user to have a complete date (year, month, day)
