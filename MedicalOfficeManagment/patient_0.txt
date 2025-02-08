@@ -3,6 +3,7 @@ Name: patient
 Last Name: default
 Phone Number: 0550607080
 Date of Birth: 2005-03-11
+Antecedent: default antecedent
  Observations: default observation
- diagnostic: default diagnostic
+ diagnostic: default prescription
 prescription: default med

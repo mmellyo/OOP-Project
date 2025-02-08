@@ -31,6 +31,8 @@ public class MedicalRecordApp {
             "default",
             "0550607080",
             "2005-03-11",
+
+            "default antecedent",
             "default observation",
             "default prescription",
             "default med"
@@ -162,7 +164,7 @@ public class MedicalRecordApp {
                         patient.getLastName(),
                         patient.getDateOfBirth(),
 
-                        "not yet",
+                        patient.getAntecedent(),
                         patient.getObservation(),
                         patient.getDiagnostic(),
                         patient.getPrescription()
@@ -372,10 +374,15 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
     // Load existing observation or diagnostic if available
     Patient patient = readPatientFromFile(patientId);
     if (patient != null) {
+        
         if (title.equals("Observation")) {
+
             inputArea.setText(patient.getObservation());
+
         } else if (title.equals("Diagnostic")) {
+
             inputArea.setText(patient.getDiagnostic());
+
         }
     }
 
@@ -386,10 +393,17 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
 
     saveButton.addActionListener(e -> {
         if (patient != null) {
+
+            String currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
             if (title.equals("Observation")) {
+
                 patient.setObservation(inputArea.getText());
+                patient.setAntecedent(patient.getAntecedent() + "\n" + currentDate + ": " + inputArea.getText());
+
             } else if (title.equals("Diagnostic")) {
+
                 patient.setDiagnostic(inputArea.getText());
+
             }
             savePatientToFile(patient);
             JOptionPane.showMessageDialog(window, "Détails enregistrés!");
@@ -562,7 +576,7 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
                 }
 
                 // Create new Patient object +  add it to the list
-                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "none", "none");
+                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "not yet", "not yet", "none");
                 patientRecords.add(newPatient);
 
                 // Save patient details to a file
@@ -593,6 +607,8 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
             out.println("Last Name: " + patient.getLastName());
             out.println("Phone Number: " + patient.getPhoneNumber());
             out.println("Date of Birth: " + patient.getDateOfBirth());
+
+            out.println("Antecedent: " + patient.getAntecedent());
             out.println(" Observations: " + patient.getObservation());
             out.println(" diagnostic: " + patient.getDiagnostic());
             out.println("prescription: " + patient.getPrescription());
@@ -611,11 +627,13 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
             String lastName = br.readLine().split(": ")[1];
             String phoneNumber = br.readLine().split(": ")[1];
             String dateOfBirth = br.readLine().split(": ")[1];
+
+            String antecedent = br.readLine().split(": ")[1];
             String Observations = br.readLine().split(": ")[1];
             String diagnostic = br.readLine().split(": ")[1];
             String prescription = br.readLine().split(": ")[1];
 
-            return new Patient(id, name, lastName, phoneNumber, dateOfBirth, Observations, diagnostic, prescription);
+            return new Patient(id, name, lastName, phoneNumber, dateOfBirth, antecedent, Observations, diagnostic, prescription);
 
         } catch (IOException e) {
             e.printStackTrace();
