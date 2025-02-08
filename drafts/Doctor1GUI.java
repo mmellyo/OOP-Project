@@ -1,36 +1,38 @@
-// NOUVELLE VERSION QUI CONSISTE A AVOIR UN JSplitPane POUR LA GESTION DES RDV 
-// QUAND CE CODE S'EXECUTE IL DONNE LES OUTPUTS SUIVANTS : UNE FENETRE JSplitPane DEVISER EN 2 UNE PARTIE POUR LE CALENDAR ET L'AUTRE POUR LES DETAILS DES RDV
-// UNE AUTRE FENETRE POUR LE CALENDRIER DU MEDECIN 1 
+// J'AI BCP BCP MODIFIER 
+// LA FENETRE EST ASSEZ GRANDE ELLE A LA TAILLE DE MON PC
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
-public class Doctor1GUI extends CalendarGUI {
+public class Doctor1GUI extends JFrame {
+    private JSplitPane splitPane;
+    private AppointmentTable appointmentTable;
+    private JPanel emptyPanel;
+
     public Doctor1GUI(CalendarINFO calendarInfo) {
-        super(calendarInfo, "Doctor 1 Calendar");
-        createDoctorGUI("Appointment Management"); // The title of the JSplitPane
+        createDoctorGUI("Gestion des Rendez-vous", calendarInfo);
     }
 
-    private void createDoctorGUI(String title) {
-        JFrame frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        
-        // Left part : for the doctor calendar ( currently empty )
-        JPanel calendarPanel = new JPanel();
-        calendarPanel.add(new JLabel("Doctor's Calendar 1"));
-        
-        // Right part: for appointment details ( currently empty )
-        JPanel detailsPanel = new JPanel();
-        detailsPanel.add(new JLabel("Appointment details"));
-        
-        // JSplitPane creation
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, calendarPanel, detailsPanel);
-        splitPane.setDividerLocation(350); // Initial position of the separator between the left and right part
-        
-        frame.add(splitPane);
-        frame.setVisible(true); // Make the JSplitPane visible
+    private void createDoctorGUI(String title, CalendarINFO calendarInfo) {
+        setTitle(title);
+        setSize(1550, 750);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Assuming CalendarGUI has a method to get the calendar component
+        CalendarGUI calendarPanel = new CalendarGUI(calendarInfo);
+        calendarPanel.setDoctorGUI(this);
+
+        emptyPanel = new JPanel();
+        appointmentTable = new AppointmentTable();
+
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, calendarPanel, emptyPanel);
+        splitPane.setDividerLocation(450);
+
+        add(splitPane);
+        setVisible(true);
+    }
+
+    public void showAppointmentTable(String selectedDate) {
+        appointmentTable.updateAppointments(selectedDate);
+        splitPane.setRightComponent(appointmentTable.getTablePanel());
     }
 }
