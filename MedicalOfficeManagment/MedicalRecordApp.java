@@ -23,6 +23,8 @@ public class MedicalRecordApp {
     private static Doctor defaultDoctor1;
     //Main method - Entry point for the application
     public static void main(String[] args) {
+        // Load patient records from files
+        loadPatientRecords();
 
         //Create a default patient for testing purposes
         Patient defaultPatient = new Patient(
@@ -93,10 +95,25 @@ public class MedicalRecordApp {
         } );  
     }
 
+    // Method to load patient records from files
+    private static void loadPatientRecords() {
+        File folder = new File("."); // Current directory
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.startsWith("patient_") && name.endsWith(".txt"));
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                String fileName = file.getName();
+                int patientId = Integer.parseInt(fileName.substring(8, fileName.length() - 4)); // Extract patient ID from filename
+                Patient patient = readPatientFromFile(patientId);
+                if (patient != null) {
+                    patientRecords.add(patient);
+                }
+            }
+        }
+    }
+
 
     /**** Method to display the "Welcome Doctor" window for the two doctors ****/
-
-
     private static void openDoctorWelcome(String doctorName) {
         JFrame doctorWelcomeFrame = new JFrame("Welcome Doctor");
         doctorWelcomeFrame.setSize(400, 300);  // Window size
