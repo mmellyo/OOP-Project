@@ -1,7 +1,9 @@
 ID: 0
 Name: patient
 Last Name: default
-Phone Number: 05000000
+Phone Number: 0550607080
 Date of Birth: 2005-03-11
-Previous Observations: 2024-11-01
-Previous Observations Dcr: Doctor1
+Antecedent: default antecedent
+ Observations: default observation
+ diagnostic: default prescription
+prescription: default med

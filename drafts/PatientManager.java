@@ -1,3 +1,5 @@
+
+/*
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -93,7 +95,7 @@ public class PatientManager {
         String dob = scanner.nextLine();
 
         int newId = patientRecords.size() + 1; // Generate a new unique ID
-        Patient newPatient = new Patient(newId, name, lastName, phoneNumber, dob, "No Observations", "No Prescription");
+        Patient newPatient = new Patient(newId, name, lastName, phoneNumber, dateOfBirth, "No Observations", "No diag" ,"no Prescription");
         patientRecords.add(newPatient);
 
         savePatientsToFile(); // Save the new patient to file
@@ -137,3 +139,4 @@ public class PatientManager {
         }
     }
 }
+ */

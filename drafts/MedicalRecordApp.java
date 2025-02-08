@@ -23,16 +23,21 @@ public class MedicalRecordApp {
     private static Doctor defaultDoctor1;
     //Main method - Entry point for the application
     public static void main(String[] args) {
+        // Load patient records from files
+        loadPatientRecords();
 
         //Create a default patient for testing purposes
         Patient defaultPatient = new Patient(
             0000,
             "patient",
             "default",
-            "05000000",
+            "0550607080",
             "2005-03-11",
-            "2024-11-01",
-            "Doctor1"
+
+            "default antecedent",
+            "default observation",
+            "default prescription",
+            "default med"
             );
 
         patientRecords.add(defaultPatient);
@@ -89,11 +94,44 @@ public class MedicalRecordApp {
             }
         } );  
     }
+    // Method to save patient details to a file
+    private static void savePatientToFile(Patient patient) {
+        String filename = "patient_" + patient.getId() + ".txt";
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            out.println("ID: " + patient.getId());
+            out.println("Name: " + patient.getName());
+            out.println("Last Name: " + patient.getLastName());
+            out.println("Phone Number: " + patient.getPhoneNumber());
+            out.println("Date of Birth: " + patient.getDateOfBirth());
+
+            out.println("Antecedent: " + patient.getAntecedent());
+            out.println(" Observations: " + patient.getObservation());
+            out.println(" diagnostic: " + patient.getDiagnostic());
+            out.println("prescription: " + patient.getPrescription());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+   
+    // Method to load patient records from files
+    private static void loadPatientRecords() {
+        File folder = new File("."); // Current directory
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.startsWith("patient_") && name.endsWith(".txt"));
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                String fileName = file.getName();
+                int patientId = Integer.parseInt(fileName.substring(8, fileName.length() - 4)); // Extract patient ID from filename
+                Patient patient = readPatientFromFile(patientId);
+                if (patient != null) {
+                    patientRecords.add(patient);
+                }
+            }
+        }
+    }
 
 
     /**** Method to display the "Welcome Doctor" window for the two doctors ****/
-
-
     private static void openDoctorWelcome(String doctorName) {
         JFrame doctorWelcomeFrame = new JFrame("Welcome Doctor");
         doctorWelcomeFrame.setSize(400, 300);  // Window size
@@ -103,96 +141,87 @@ public class MedicalRecordApp {
         // Create a label with the welcome message
         JLabel welcomeLabel = new JLabel("Welcome Dr." + doctorName, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));  // text style 
-
+    
         // Créer un bouton de déconnexion (Log Out)
         JButton logoutButton = new JButton("Log Out");
         logoutButton.addActionListener(e -> {
-        doctorWelcomeFrame.dispose();
+            doctorWelcomeFrame.dispose();
         });
-
+    
         // Créer le bouton "See Patient"
         JButton seePatientButton = new JButton("See Patient");
         seePatientButton.addActionListener(e -> openPatientWindow());
-        
-        
-        doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER); // add label to the window at the top of the window
-        
+    
+        // Créer un panel pour les boutons
+        JPanel buttonPanel = new JPanel();
+        logoutButton.setPreferredSize(new Dimension(150, 50)); 
+        seePatientButton.setPreferredSize(new Dimension(150, 50));
+    
+        buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
+        buttonPanel.add(seePatientButton);  
+    
         // Ajouter l'étiquette au centre de la fenêtre
         doctorWelcomeFrame.add(welcomeLabel, BorderLayout.CENTER);
-
-        // Créer un panel pour le bouton "Log Out"
-       JPanel buttonPanel = new JPanel();
-       logoutButton.setPreferredSize(new Dimension(150, 50)); 
-       seePatientButton.setPreferredSize(new Dimension(150, 50));
-
-       buttonPanel.add(logoutButton); // Ajouter le bouton à ce panel
-       buttonPanel.add(seePatientButton);  
-
-        // Ajouter le panel contenant le bouton au bas de la fenêtre
+    
+        // Ajouter le panel contenant les boutons au bas de la fenêtre
         doctorWelcomeFrame.add(buttonPanel, BorderLayout.SOUTH);
-
+    
         // Afficher la fenêtre de bienvenue du médecin
         doctorWelcomeFrame.setVisible(true);  
     }
-
      
     /**********      Methode open see patient window         *********/
-    
     
     private static void openPatientWindow() {
         JFrame patientFrame = new JFrame("Today's Patients Informations");
         patientFrame.setSize(800, 400);  // Taille de la fenêtre
         patientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Fermer uniquement cette fenêtre
         patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
-
-         // Définir les noms des colonnes
-        String[] columnNames = {"ID", "Name", "First Name", "Age", "Antecedent", "Observation", "Diagnostic", "Prescription", "Ultrasound", "Certificate"};
-    //     Object[][] data = {
-    //       {1, "patient", "default", 35, "Add", "Add", "Add", "Add", "Add", "Add"},
-    //       {2, "defaut", "patient", 40, "Add", "Add", "Add", "Add", "Add", "Add"},
-    //     // Ajoutez d'autres patients ici
-    //    };
-        // Créer le modèle du tableau
-        DefaultTableModel model = new DefaultTableModel( columnNames, 0);
+    
+        // Définir les noms des colonnes
+        String[] columnNames = {"ID", "Name", "First Name", "Date of Birth", "Antecedent" ,"Observation", "Diagnostic", "Prescription", "Certificate"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(model);
+    
+        // Read patient files and populate the table
+        File folder = new File("."); // Current directory
+        File[] listOfFiles = folder.listFiles((dir, name) -> name.startsWith("patient_") && name.endsWith(".txt"));
+    
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                String fileName = file.getName();
+                int patientId = Integer.parseInt(fileName.substring(8, fileName.length() - 4)); // Extract patient ID from filename
+                Patient patient = readPatientFromFile(patientId);
+                if (patient != null) {
+                    model.addRow(new Object[]{
+                        patient.getId(),
+                        patient.getName(),
+                        patient.getLastName(),
+                        patient.getDateOfBirth(),
 
-            // Read patient files and populate the table
-            File folder = new File("."); // Current directory
-            File[] listOfFiles = folder.listFiles((dir, name) -> name.startsWith("patient_") && name.endsWith(".txt"));
-
-            if (listOfFiles != null) {
-                for (File file : listOfFiles) {
-                    String fileName = file.getName();
-                    int patientId = Integer.parseInt(fileName.substring(8, fileName.length() - 4)); // Extract patient ID from filename
-                    Patient patient = readPatientFromFile(patientId);
-                    if (patient != null) {
-                        model.addRow(new Object[]{
-                            patient.getId(),
-                            patient.getName(),
-                            patient.getLastName(),
-                            patient.getPhoneNumber(),
-                            patient.getDateOfBirth(),
-                            patient.getObservation(),
-                            patient.getPrescription()
-                        });
-                    }
+                        patient.getAntecedent(),
+                        patient.getObservation(),
+                        patient.getDiagnostic(),
+                        patient.getPrescription(),
+                        "generate Certificate"
+                    });
                 }
             }
-
-        // Ajouter des renderers et editors pour les colonnes contenant des boutons
-         for (int i = 4; i < columnNames.length; i++) {
-          table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
-          table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
         }
-
-         // Ajouter le tableau dans un JScrollPane
-         JScrollPane scrollPane = new JScrollPane(table);
-         patientFrame.add(scrollPane, BorderLayout.CENTER);
- 
-         // Afficher la fenêtre
-         patientFrame.setVisible(true);
+    
+        // Ajouter des renderers et editors pour les colonnes contenant des boutons
+        for (int i = 4; i < columnNames.length; i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
+            table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
+        }
+    
+        // Ajouter le tableau dans un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        patientFrame.add(scrollPane, BorderLayout.CENTER);
+    
+        // Afficher la fenêtre
+        patientFrame.setVisible(true);
     }
-
     // Classe pour rendre un bouton dans une cellule
     static class ButtonRenderer extends JButton implements TableCellRenderer {
     public ButtonRenderer() {
@@ -201,7 +230,7 @@ public class MedicalRecordApp {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setText("Edit");
+        setText("Add");
 
         //setText((value == null) ? "Add" : value.toString());
         return this;
@@ -225,21 +254,23 @@ public class MedicalRecordApp {
                 int row = table.getSelectedRow(); // Obtenir la ligne sélectionnée
                 int column = table.getSelectedColumn(); // Obtenir la colonne sélectionnée
         
-                // Affichage pour déboguer
+                // Affichage pdqour déboguer
                 System.out.println("Clic détecté sur la ligne " + row + ", colonne " + column);
         
                 // Vérification des colonnes et des actions associées
+                int patientId = (int) table.getValueAt(row, 0); // Obtenir l'ID du patient
+
                 if (column == 7) { // Si c'est la colonne "Prescription" (colonne 7 ici)
-                    openPrescriptionWindow((int) table.getValueAt(row, 0)); // Ouvre la fenêtre d'ordonnance
+                    openPrescriptionWindow(patientId); // Ouvre la fenêtre d'ordonnance
                 
                 } else if (column == 5) {
-                    openObservationOrDiagnosticWindow("Observation", (int) table.getValueAt(row, 0));// Ouvre la fenetre Observation
+                    openObservationOrDiagnosticWindow("Observation", patientId);// Ouvre la fenetre Observation
                 
                 } else if (column == 6) {
-                    openObservationOrDiagnosticWindow("Diagnostic", (int) table.getValueAt(row, 0));  // Ouvre la fenêtre Diagnostic
+                    openObservationOrDiagnosticWindow("Diagnostic",patientId);  // Ouvre la fenêtre Diagnostic
                 
-                } else if (column == 9) {
-                    openCertificateWindow();  // Ouvre la fenêtre certtificat
+                } else if (column == 8) {
+                    openCertificateWindow(patientId); // Ouvre la génération du certificat                    
                 }
             }
         });
@@ -352,9 +383,8 @@ private static void openPrescriptionWindow(int patientId) {
     prescriptionFrame.setVisible(true);
 }
 
+
 /******* Méthode pour ouvrir la fenêtre Observation ou Diagnostic ******/
-
-
 private static void openObservationOrDiagnosticWindow(String title, int patientId) {
     JFrame window = new JFrame(title);
     window.setSize(400, 300);
@@ -381,10 +411,15 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
     // Load existing observation or diagnostic if available
     Patient patient = readPatientFromFile(patientId);
     if (patient != null) {
+        
         if (title.equals("Observation")) {
+
             inputArea.setText(patient.getObservation());
+
         } else if (title.equals("Diagnostic")) {
+
             inputArea.setText(patient.getDiagnostic());
+
         }
     }
 
@@ -395,12 +430,22 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
 
     saveButton.addActionListener(e -> {
         if (patient != null) {
+
+            String currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
             if (title.equals("Observation")) {
+
                 patient.setObservation(inputArea.getText());
+                patient.setAntecedent(patient.getAntecedent() + "\n" + currentDate + ": " + inputArea.getText());
+
             } else if (title.equals("Diagnostic")) {
+
                 patient.setDiagnostic(inputArea.getText());
+
             }
-            savePatientToFile(patient);
+            savePatientToFile(patient); 
+            updatePatientRecord(patientId, inputArea.getText(), title);
+           // refreshTable((DefaultTableModel) myTable.getModel());
+
             JOptionPane.showMessageDialog(window, "Détails enregistrés!");
         }
     });
@@ -417,10 +462,70 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
 
 
 /******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
-    private static void openCertificateWindow() {
-       
-    }
+private static void openCertificateWindow(int patientId) {
+    // Charger les détails du patient
+    Patient patient = readPatientFromFile(patientId);
+    if (patient != null) {
+        // Vérifier si un diagnostic est disponible
+        if (patient.getDiagnostic() == null || patient.getDiagnostic().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Aucun diagnostic disponible pour générer un certificat.");
+            return;
+        }
 
+        // Appeler la génération du certificat
+        MedicalCertificateGenerator.generatePDF(
+            patient.getName(),
+             patient.getLastName(),
+            patient.getDateOfBirth(),
+            patient.getDiagnostic(),
+            "Dr...",
+            "BloomCare Center",
+            7
+        );
+        JOptionPane.showMessageDialog(null, "Certificat généré avec succès!");
+    } else {
+        JOptionPane.showMessageDialog(null, "Patient introuvable.");
+    }
+}
+
+
+private static void updatePatientRecord(int patientId, String newValue, String fieldType) {
+    for (Patient patient : patientRecords) {
+        if (patient.getId() == patientId) {
+            switch (fieldType) {
+                case "Observation":
+                    patient.setObservation(newValue);
+                    break;
+                case "Diagnostic":
+                    patient.setDiagnostic(newValue);
+                    break;
+                case "Prescription":
+                    patient.setPrescription(newValue);
+                    break;
+            }
+            savePatientToFile(patient); // Save changes to file
+            break;
+        }
+    }
+}
+
+    //refresh the table so that the ui reflectts changes
+    private static void refreshTable(DefaultTableModel model) {
+     model.setRowCount(0); // Clear the table
+        for (Patient patient : patientRecords) {
+            model.addRow(new Object[]{
+                patient.getId(),
+                patient.getName(),
+                patient.getLastName(),
+                patient.getDateOfBirth(),
+                patient.getAntecedent(),
+                patient.getObservation(),
+                patient.getDiagnostic(),
+                patient.getPrescription(),
+                "generate Certificate"
+            });
+        }   
+    }
 
     /**** Method to enter patients info by nurse ****/
     private static void openNameInput() {
@@ -477,7 +582,6 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
             }
         });
     }
-
 
             
     //**** Method to output registered patient details******//
@@ -571,7 +675,7 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
                 }
 
                 // Create new Patient object +  add it to the list
-                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "none");
+                Patient newPatient = new Patient(id, name, lastname, phoneNumber, dateOfBirth, "not yet", "not yet", "not yet", "none");
                 patientRecords.add(newPatient);
 
                 // Save patient details to a file
@@ -593,21 +697,7 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
         });
     }
 
-    // Method to save patient details to a file
-    private static void savePatientToFile(Patient patient) {
-        String filename = "patient_" + patient.getId() + ".txt";
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-            out.println("ID: " + patient.getId());
-            out.println("Name: " + patient.getName());
-            out.println("Last Name: " + patient.getLastName());
-            out.println("Phone Number: " + patient.getPhoneNumber());
-            out.println("Date of Birth: " + patient.getDateOfBirth());
-            out.println("Previous Observations: " + patient.getObservation());
-            out.println("Previous Observations Dcr: " + patient.getPrescription());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     // Method to read patient details from a file
     private static Patient readPatientFromFile(int patientId) {
@@ -619,10 +709,13 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
             String lastName = br.readLine().split(": ")[1];
             String phoneNumber = br.readLine().split(": ")[1];
             String dateOfBirth = br.readLine().split(": ")[1];
-            String previousObservations = br.readLine().split(": ")[1];
-            String previousObservationsDcr = br.readLine().split(": ")[1];
 
-            return new Patient(id, name, lastName, phoneNumber, dateOfBirth, previousObservations, previousObservationsDcr);
+            String antecedent = br.readLine().split(": ")[1];
+            String Observations = br.readLine().split(": ")[1];
+            String diagnostic = br.readLine().split(": ")[1];
+            String prescription = br.readLine().split(": ")[1];
+
+            return new Patient(id, name, lastName, phoneNumber, dateOfBirth, antecedent, Observations, diagnostic, prescription);
 
         } catch (IOException e) {
             e.printStackTrace();
