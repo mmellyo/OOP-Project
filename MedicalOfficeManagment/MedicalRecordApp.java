@@ -94,7 +94,25 @@ public class MedicalRecordApp {
             }
         } );  
     }
+    // Method to save patient details to a file
+    private static void savePatientToFile(Patient patient) {
+        String filename = "patient_" + patient.getId() + ".txt";
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            out.println("ID: " + patient.getId());
+            out.println("Name: " + patient.getName());
+            out.println("Last Name: " + patient.getLastName());
+            out.println("Phone Number: " + patient.getPhoneNumber());
+            out.println("Date of Birth: " + patient.getDateOfBirth());
 
+            out.println("Antecedent: " + patient.getAntecedent());
+            out.println(" Observations: " + patient.getObservation());
+            out.println(" diagnostic: " + patient.getDiagnostic());
+            out.println("prescription: " + patient.getPrescription());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+   
     // Method to load patient records from files
     private static void loadPatientRecords() {
         File folder = new File("."); // Current directory
@@ -161,7 +179,7 @@ public class MedicalRecordApp {
         patientFrame.setLocationRelativeTo(null);  // Centrer la fenêtre
     
         // Définir les noms des colonnes
-        String[] columnNames = {"ID", "Name", "First Name", "Date of Birth", "Antecedent" ,"Observation", "Diagnostic", "Prescription"};
+        String[] columnNames = {"ID", "Name", "First Name", "Date of Birth", "Antecedent" ,"Observation", "Diagnostic", "Prescription", "Certificate"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(model);
     
@@ -184,7 +202,8 @@ public class MedicalRecordApp {
                         patient.getAntecedent(),
                         patient.getObservation(),
                         patient.getDiagnostic(),
-                        patient.getPrescription()
+                        patient.getPrescription(),
+                        "generate Certificate"
                     });
                 }
             }
@@ -211,7 +230,7 @@ public class MedicalRecordApp {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setText("Edit");
+        setText("Add");
 
         //setText((value == null) ? "Add" : value.toString());
         return this;
@@ -239,17 +258,19 @@ public class MedicalRecordApp {
                 System.out.println("Clic détecté sur la ligne " + row + ", colonne " + column);
         
                 // Vérification des colonnes et des actions associées
+                int patientId = (int) table.getValueAt(row, 0); // Obtenir l'ID du patient
+
                 if (column == 7) { // Si c'est la colonne "Prescription" (colonne 7 ici)
-                    openPrescriptionWindow((int) table.getValueAt(row, 0)); // Ouvre la fenêtre d'ordonnance
+                    openPrescriptionWindow(patientId); // Ouvre la fenêtre d'ordonnance
                 
                 } else if (column == 5) {
-                    openObservationOrDiagnosticWindow("Observation", (int) table.getValueAt(row, 0));// Ouvre la fenetre Observation
+                    openObservationOrDiagnosticWindow("Observation", patientId);// Ouvre la fenetre Observation
                 
                 } else if (column == 6) {
-                    openObservationOrDiagnosticWindow("Diagnostic", (int) table.getValueAt(row, 0));  // Ouvre la fenêtre Diagnostic
+                    openObservationOrDiagnosticWindow("Diagnostic",patientId);  // Ouvre la fenêtre Diagnostic
                 
-                } else if (column == 9) {
-                    MedicalCertificateGenerator.generatePDF("Jane Doe", "1985-08-22", "Hypertension", "Dr. Adams", "Central Clinic", 10);
+                } else if (column == 8) {
+                    openCertificateWindow(patientId); // Ouvre la génération du certificat                    
                 }
             }
         });
@@ -362,9 +383,8 @@ private static void openPrescriptionWindow(int patientId) {
     prescriptionFrame.setVisible(true);
 }
 
+
 /******* Méthode pour ouvrir la fenêtre Observation ou Diagnostic ******/
-
-
 private static void openObservationOrDiagnosticWindow(String title, int patientId) {
     JFrame window = new JFrame(title);
     window.setSize(400, 300);
@@ -422,7 +442,10 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
                 patient.setDiagnostic(inputArea.getText());
 
             }
-            savePatientToFile(patient);
+            savePatientToFile(patient); 
+            updatePatientRecord(patientId, inputArea.getText(), title);
+           // refreshTable((DefaultTableModel) myTable.getModel());
+
             JOptionPane.showMessageDialog(window, "Détails enregistrés!");
         }
     });
@@ -438,20 +461,71 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
 }
 
 
-// /******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
-//     private static void openCertificateWindow(int patientId) {
-        
-//     }
+/******* Méthode pour ouvrir la fenêtre de Certificate *******/ 
+private static void openCertificateWindow(int patientId) {
+    // Charger les détails du patient
+    Patient patient = readPatientFromFile(patientId);
+    if (patient != null) {
+        // Vérifier si un diagnostic est disponible
+        if (patient.getDiagnostic() == null || patient.getDiagnostic().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Aucun diagnostic disponible pour générer un certificat.");
+            return;
+        }
 
-//     // Méthode pour enregistrer le certificat dans un fichier
-//     private static void saveCertificateToFile(int patientId, String content) {
-//         try (PrintWriter writer = new PrintWriter("certificate_" + patientId + ".txt")) {
-//             writer.println(content);
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//         }
-//     }
+        // Appeler la génération du certificat
+        MedicalCertificateGenerator.generatePDF(
+            patient.getName(),
+             patient.getLastName(),
+            patient.getDateOfBirth(),
+            patient.getDiagnostic(),
+            "Dr...",
+            "BloomCare Center",
+            7
+        );
+        JOptionPane.showMessageDialog(null, "Certificat généré avec succès!");
+    } else {
+        JOptionPane.showMessageDialog(null, "Patient introuvable.");
+    }
+}
 
+
+private static void updatePatientRecord(int patientId, String newValue, String fieldType) {
+    for (Patient patient : patientRecords) {
+        if (patient.getId() == patientId) {
+            switch (fieldType) {
+                case "Observation":
+                    patient.setObservation(newValue);
+                    break;
+                case "Diagnostic":
+                    patient.setDiagnostic(newValue);
+                    break;
+                case "Prescription":
+                    patient.setPrescription(newValue);
+                    break;
+            }
+            savePatientToFile(patient); // Save changes to file
+            break;
+        }
+    }
+}
+
+    //refresh the table so that the ui reflectts changes
+    private static void refreshTable(DefaultTableModel model) {
+     model.setRowCount(0); // Clear the table
+        for (Patient patient : patientRecords) {
+            model.addRow(new Object[]{
+                patient.getId(),
+                patient.getName(),
+                patient.getLastName(),
+                patient.getDateOfBirth(),
+                patient.getAntecedent(),
+                patient.getObservation(),
+                patient.getDiagnostic(),
+                patient.getPrescription(),
+                "generate Certificate"
+            });
+        }   
+    }
 
     /**** Method to enter patients info by nurse ****/
     private static void openNameInput() {
@@ -508,7 +582,6 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
             }
         });
     }
-
 
             
     //**** Method to output registered patient details******//
@@ -624,24 +697,7 @@ private static void openObservationOrDiagnosticWindow(String title, int patientI
         });
     }
 
-    // Method to save patient details to a file
-    private static void savePatientToFile(Patient patient) {
-        String filename = "patient_" + patient.getId() + ".txt";
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-            out.println("ID: " + patient.getId());
-            out.println("Name: " + patient.getName());
-            out.println("Last Name: " + patient.getLastName());
-            out.println("Phone Number: " + patient.getPhoneNumber());
-            out.println("Date of Birth: " + patient.getDateOfBirth());
 
-            out.println("Antecedent: " + patient.getAntecedent());
-            out.println(" Observations: " + patient.getObservation());
-            out.println(" diagnostic: " + patient.getDiagnostic());
-            out.println("prescription: " + patient.getPrescription());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     // Method to read patient details from a file
     private static Patient readPatientFromFile(int patientId) {

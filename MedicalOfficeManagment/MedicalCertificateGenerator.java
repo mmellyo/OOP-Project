@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 public class MedicalCertificateGenerator implements Printable {
 
     private final String patientName;
+    private final String patientLastName;
     private final String birthDate;
     private final String diagnosis;
     private final String doctorName;
@@ -15,8 +16,9 @@ public class MedicalCertificateGenerator implements Printable {
     private final int treatmentDuration;
     private BufferedImage signatureImage; // For the signature image
 
-    public MedicalCertificateGenerator(String patientName, String birthDate, String diagnosis, String doctorName, String clinicName, int treatmentDuration) {
+    public MedicalCertificateGenerator(String patientName, String patientLastName, String birthDate, String diagnosis, String doctorName, String clinicName, int treatmentDuration) {
         this.patientName = patientName;
+        this.patientLastName =patientLastName;
         this.birthDate = birthDate;
         this.diagnosis = diagnosis;
         this.doctorName = doctorName;
@@ -48,11 +50,12 @@ public class MedicalCertificateGenerator implements Printable {
         g.drawString("Clinic: " + clinicName, 50, 120);
         g.drawString("Date: " + new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()), 50, 140);
         g.drawString("Patient Name: " + patientName, 50, 180);
-        g.drawString("Date of Birth: " + birthDate, 50, 200);
-        g.drawString("Medical Condition: " + diagnosis, 50, 220);
-        g.drawString("Treatment Duration: " + treatmentDuration + " days", 50, 240);
+        g.drawString("Patient Last Name: " + patientLastName, 50, 200);
+        g.drawString("Date of Birth: " + birthDate, 50, 220);
+        g.drawString("Medical Condition: " + diagnosis, 50, 240);
+        g.drawString("Treatment Duration: " + treatmentDuration + " days", 50, 260);
 
-        g.drawString("Doctor's Signature:", 50, 300);
+        g.drawString("Doctor's Signature:", 50, 320);
 
         // Draw signature image if loaded successfully
         if (signatureImage != null) {
@@ -64,9 +67,9 @@ public class MedicalCertificateGenerator implements Printable {
         return PAGE_EXISTS;
     }
 
-    public static void generatePDF(String patientName, String birthDate, String diagnosis, String doctorName, String clinicName, int treatmentDuration) {
+    public static void generatePDF(String patientName, String patientLastName, String birthDate, String diagnosis, String doctorName, String clinicName, int treatmentDuration) {
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new MedicalCertificateGenerator(patientName, birthDate, diagnosis, doctorName, clinicName, treatmentDuration));
+        job.setPrintable(new MedicalCertificateGenerator(patientName, patientLastName,birthDate, diagnosis, doctorName, clinicName, treatmentDuration));
 
         if (job.printDialog()) {
             try {
@@ -78,6 +81,6 @@ public class MedicalCertificateGenerator implements Printable {
     }
 
     public static void main(String[] args) {
-        generatePDF("John Doe", "1990-05-14", "Flu and Fever", "Dr. Smith", "City Hospital", 7);
+        generatePDF("John", "does", "1990-05-14", "Flu and Fever", "Dr. Smith", "City Hospital", 7);
     }
 }
