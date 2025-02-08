@@ -5,13 +5,30 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ButtonRenderer extends JPanel implements TableCellRenderer {
+    private JButton addButton, saveButton, editButton, deleteButton, smsButton;
+
     public ButtonRenderer() {
-        setLayout(new FlowLayout(FlowLayout.CENTER, 2, 20));
-        add(new JButton("Add"));
-        add(new JButton("Save"));
-        add(new JButton("Edit"));
-        add(new JButton("Delete"));
-        add(new JButton("SMS"));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 8, 20));
+
+        addButton = new JButton("Add");
+        saveButton = new JButton("Save");
+        editButton = new JButton("Edit");
+        deleteButton = new JButton("Delete");
+        smsButton = new JButton("SMS");
+
+        // Définir les couleurs
+        saveButton.setBackground(Color.GREEN);
+        saveButton.setForeground(Color.WHITE);
+
+        deleteButton.setBackground(Color.RED);
+        deleteButton.setForeground(Color.WHITE);
+
+        // Ajouter les boutons
+        add(addButton);
+        add(saveButton);
+        add(editButton);
+        add(deleteButton);
+        add(smsButton);
     }
 
     @Override
