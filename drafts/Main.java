@@ -1,4 +1,4 @@
-// NOUVELLE VERSION AVEC DES IDEES AMELIORER ET SIMPLE POUR L'UTILISATEUR
+// J'AI MODIFIER MAIS J'AI OUBLIE
 
 import java.time.LocalDate; // Class used to manipulate dates without times
 import javax.swing.*;
@@ -42,25 +42,29 @@ public class Main {
                 });
         
                 // Action listener for Doctor 2
-                doctor2Button.addActionListener(e -> {
+                /*doctor2Button.addActionListener(e -> {
                     JOptionPane.showMessageDialog(doctorFrame, "You have chosen Doctor 2: Gynecologist");
                     openDoctor2Calendar(); // Open doctor 2 Calendar
                     doctorFrame.dispose(); // Close "Choose Doctor" window
-                });
+                });*/
             }
             // **** End of Melly's part **** //
 
         LocalDate currentDate = LocalDate.now(); // Get the current date and store it in a variable named currentDate
+    
 
         // Method to open doctor 1 calendar 
-        private static void openDoctor1Calendar() {
+         private static void openDoctor1Calendar() {
             //  Display Docteur's 1 GUI Calendar
             new Doctor1GUI(defaultDoctor1);
         } 
+
+        
+        
         
         // Method to open doctor 2 calendar 
-        private static void openDoctor2Calendar() {
+        /*private static void openDoctor2Calendar() {
             // Display Docteur's 2 GUI Calendar
             new Doctor2GUI(defaultDoctor2);
-        }
+        }*/
 }
