@@ -159,9 +159,7 @@ public class MedicalRecordApp {
 
         // Créer un bouton de "See Today Patient"
         JButton seeTodayPatientButton = new JButton("See Today Patient");
-        logoutButton.addActionListener(e -> {
-            doctorWelcomeFrame.dispose();
-        });
+        seeTodayPatientButton.addActionListener(e -> openTodayPatientWindow());
     
         // Créer le bouton "See all Patient"
         JButton seePatientButton = new JButton("See All Patient");
@@ -243,6 +241,52 @@ public class MedicalRecordApp {
         // Afficher la fenêtre
         patientFrame.setVisible(true);
     }
+   
+   private static void openTodayPatientWindow() {
+    JFrame patientFrame = new JFrame("Patient Information");
+    patientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+    // Get the screen size and set the frame size
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    patientFrame.setSize(screenSize.width, screenSize.height);
+    patientFrame.setLocationRelativeTo(null);
+
+    // Define column names
+    String[] columnNames = {"ID", "Name", "First Name", "Date of Birth", "Antecedent", "Observation", "Diagnostic", "Prescription", "Certificate"};
+    DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+    JTable table = new JTable(model);
+
+    // Create a single patient record
+    model.addRow(new Object[]{
+        1,  // ID
+        "default", // Last Name
+        "Patient", // First Name
+        "2005-11-03", // Date of Birth
+        "not yet", // Antecedent
+        "not yet", // Observation
+        "not yet", // Diagnostic
+        "not yet", // Prescription
+        "Generate Certificate"
+    });
+
+    // Add renderers and editors for buttons
+    for (int i = 5; i < columnNames.length; i++) {
+        table.getColumnModel().getColumn(i).setCellRenderer(new ButtonRenderer());
+        table.getColumnModel().getColumn(i).setCellEditor(new ButtonEditor(new JTextField()));
+    }
+
+    // Add table to a scroll pane
+    JScrollPane scrollPane = new JScrollPane(table);
+    patientFrame.add(scrollPane, BorderLayout.CENTER);
+
+    // Show the window
+    patientFrame.setVisible(true);
+}
+
+
+    /**********      Methode open see all patient window         *********/
+ 
+   
     // Classe pour rendre un bouton dans une cellule
     static class ButtonRenderer extends JButton implements TableCellRenderer {
     public ButtonRenderer() {
@@ -922,3 +966,18 @@ private static void updatePatientRecord(int patientId, String newValue, String f
             }
         });
     } */
+
+
+
+
+
+
+    /*
+     * 
+     * HAMDI Sarah
+       232331551005
+     * 
+     * AMERYAHIA Méllissa
+     * 232331706307
+     * 
+     */

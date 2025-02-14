@@ -1,8 +1,8 @@
 // POUR LES BOUTONS 
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
-import java.awt.*;
 
 public class ButtonRenderer extends JPanel implements TableCellRenderer {
     private JButton addButton, saveButton, editButton, deleteButton, smsButton;
@@ -16,7 +16,7 @@ public class ButtonRenderer extends JPanel implements TableCellRenderer {
         deleteButton = new JButton("Delete");
         smsButton = new JButton("SMS");
 
-        // Définir les couleurs
+        // DÃ©finir les couleurs
         saveButton.setBackground(Color.GREEN);
         saveButton.setForeground(Color.WHITE);
 

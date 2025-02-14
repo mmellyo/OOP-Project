@@ -1,17 +1,23 @@
 // INTERFACE POUR LES DETAILS DES RENDEZ VOUS SOUS FORME DE TABLEAU 
 
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class AppointmentTable {
     private JPanel panel;
     private JTable table;
     private DefaultTableModel tableModel;
 
+    // Définir les informations du patient par défaut
+    private String defaultPatientInfo = "<html>Name and Full Name : patient default <br>Phone Number : 0550607080<br>Date of Birth : 2005-03-11</html>";
+
     public AppointmentTable() {
         createGUI();
+    }
+
+    public String getDefaultPatientInfo() {
+        return defaultPatientInfo;
     }
 
     private void createGUI() {
@@ -22,7 +28,7 @@ public class AppointmentTable {
 
         // Appliquer le renderer et l'editor pour la colonne "Actions"
         table.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer());
-        table.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor());
+        table.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor(this));
 
         // Agrandir les lignes et colonnes pour un meilleur affichage
         table.setRowHeight(70);
@@ -46,4 +52,3 @@ public class AppointmentTable {
         }
     }
 }
-
