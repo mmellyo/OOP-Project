@@ -47,28 +47,6 @@ This project, available on the master branch, aims to minimize time and reduce e
 
 #### c). User Interface (UI)
 * Swing for a simple and functional grahical interface.
-* **preview** :
-  * patients and their information saved :
- 
-  <img src="README/image-3.png" alt="alt text" width="400">
-
-   * Implementation of calendar logic:
-
-    <img src="README/image-2.png" alt="alt text" width="200">
-
-
-  * log int / out :
-
-    <img src="README/image-4.png" alt="alt text" width="200">
-    <img src="README/image-5.png" alt="alt text" width="170">
-
-
-
-
-
-
-
-
 
 #### d). Database
 * File to store data on patients and appointments.
